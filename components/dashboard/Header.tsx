@@ -1,6 +1,6 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 import { LogOut, Menu } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 
@@ -8,11 +8,30 @@ interface HeaderProps {
   onMenuClick: () => void;
 }
 
+const PAGE_TITLES: Record<string, { title: string; subtitle: string }> = {
+  '/dashboard': {
+    title: 'Estadísticas de Pagos',
+    subtitle: 'Resumen general de facturación y cobranzas',
+  },
+  '/dashboard/usuarios': {
+    title: 'Gestión de Usuarios',
+    subtitle: 'Administra usuarios, roles y permisos del sistema',
+  },
+  '/dashboard/roles': {
+    title: 'Gestión de Roles',
+    subtitle: 'Administra roles y permisos del sistema',
+  },
+};
+
 export function Header({ onMenuClick }: HeaderProps) {
   const router = useRouter();
+  const pathname = usePathname();
+
+  const pageInfo = PAGE_TITLES[pathname] ?? PAGE_TITLES['/dashboard'];
 
   const handleLogout = async () => {
     await fetch('/api/auth/logout', { method: 'POST' });
+    sessionStorage.removeItem('sirca-user');
     router.push('/login');
     router.refresh();
   };
@@ -35,10 +54,10 @@ export function Header({ onMenuClick }: HeaderProps) {
 
         <div>
           <h2 className="text-base lg:text-lg font-bold leading-tight" style={{ color: '#1a2e1a' }}>
-            Estadísticas de Pagos
+            {pageInfo.title}
           </h2>
           <p className="text-[11px] hidden sm:block" style={{ color: '#6b7f6b' }}>
-            Resumen general de facturación y cobranzas
+            {pageInfo.subtitle}
           </p>
         </div>
       </div>

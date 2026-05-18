@@ -51,3 +51,45 @@ export interface DashboardFilters {
   month: number;
   advisorUuid: string;
 }
+
+/* ──────────────────────────────────────────────────────
+   RBAC / Auth Types
+   ────────────────────────────────────────────────────── */
+
+/** Permission entity from the backend */
+export interface Permission {
+  id: string;
+  name: string;
+  description: string | null;
+}
+
+/** Role entity from the backend (with nested permissions) */
+export interface Role {
+  id: string;
+  name: string;
+  description: string | null;
+  permissions?: Permission[];
+}
+
+/** User entity from the backend (password excluded) */
+export interface User {
+  id: string;
+  email: string;
+  isActive: boolean;
+  roleId: string | null;
+  role: Role | null;
+}
+
+/** Auth response — returned by POST /auth/login */
+export interface AuthUser {
+  id: string;
+  email: string;
+  isActive: boolean;
+  role: { id: string; name: string } | null;
+  permissions: string[];
+}
+
+/** Login response shape */
+export interface LoginResponse {
+  user: AuthUser;
+}

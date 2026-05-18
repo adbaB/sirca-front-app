@@ -1,8 +1,8 @@
 'use client';
 
-import { useState } from 'react';
 import { usePathname } from 'next/navigation';
-import { LayoutDashboard, X } from 'lucide-react';
+import { LayoutDashboard, Users, X, Shield } from 'lucide-react';
+import { Can } from '../ui/Can';
 
 interface SidebarProps {
   isOpen: boolean;
@@ -10,7 +10,9 @@ interface SidebarProps {
 }
 
 const navItems = [
-  { label: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
+  { label: 'Dashboard', href: '/dashboard', icon: LayoutDashboard, permission: 'read:statistics' },
+  { label: 'Usuarios', href: '/dashboard/usuarios', icon: Users, permission: 'read:users' },
+  { label: 'Roles', href: '/dashboard/roles', icon: Shield, permission: 'read:roles' },
 ];
 
 function SidebarContent({ pathname, onClose }: { pathname: string; onClose?: () => void }) {
@@ -39,10 +41,13 @@ function SidebarContent({ pathname, onClose }: { pathname: string; onClose?: () 
         </p>
         <ul className="flex flex-col gap-1">
           {navItems.map((item) => {
-            const isActive = pathname === item.href;
+            const isActive = item.href === '/dashboard'
+              ? pathname === '/dashboard'
+              : pathname.startsWith(item.href);
             const Icon = item.icon;
             return (
-              <li key={item.href}>
+              <Can permission={item.permission} key={item.href}>
+                <li >
                 <a
                   href={item.href}
                   onClick={onClose}
@@ -67,7 +72,10 @@ function SidebarContent({ pathname, onClose }: { pathname: string; onClose?: () 
                   <Icon className="h-[18px] w-[18px]" />
                   {item.label}
                 </a>
-              </li>
+                </li>
+              </Can>
+
+              
             );
           })}
         </ul>

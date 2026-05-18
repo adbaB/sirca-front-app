@@ -9,7 +9,7 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
 
 const variantStyles: Record<string, React.CSSProperties> = {
   primary: {
-    background: 'linear-gradient(135deg, #16a34a 0%, #f97316 100%)',
+    background: '#f97316',
     color: '#ffffff',
     boxShadow: '0 4px 14px rgba(22,163,74,0.25)',
   },

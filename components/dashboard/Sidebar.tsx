@@ -1,7 +1,7 @@
 'use client';
 
 import { usePathname } from 'next/navigation';
-import { LayoutDashboard, Users, X, Shield } from 'lucide-react';
+import { LayoutDashboard, Users, X, Shield, FileText } from 'lucide-react';
 import { Can } from '../ui/Can';
 
 interface SidebarProps {
@@ -13,6 +13,7 @@ const navItems = [
   { label: 'Dashboard', href: '/dashboard', icon: LayoutDashboard, permission: 'read:statistics' },
   { label: 'Usuarios', href: '/dashboard/usuarios', icon: Users, permission: 'read:users' },
   { label: 'Roles', href: '/dashboard/roles', icon: Shield, permission: 'read:roles' },
+  { label: 'Contratos', href: '/dashboard/contratos', icon: FileText, permission: 'read:contracts' },
 ];
 
 function SidebarContent({ pathname, onClose }: { pathname: string; onClose?: () => void }) {

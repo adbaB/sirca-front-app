@@ -35,6 +35,31 @@ const nextConfig: NextConfig = {
         source: '/permissions/:path*',
         destination: `${API_BASE_URL}/permissions/:path*`,
       },
+      {
+        // /contracts/** → backend:3001/contracts/**
+        source: '/contracts/:path*',
+        destination: `${API_BASE_URL}/contracts/:path*`,
+      },
+      {
+        // /affiliates/** → backend:3001/affiliates/**
+        source: '/affiliates/:path*',
+        destination: `${API_BASE_URL}/affiliates/:path*`,
+      },
+      {
+        // /payments/** → backend:3001/payments/**
+        source: '/payments/:path*',
+        destination: `${API_BASE_URL}/payments/:path*`,
+      },
+      {
+        // /persons/** → backend:3001/persons/**
+        source: '/persons/:path*',
+        destination: `${API_BASE_URL}/persons/:path*`,
+      },
+      {
+        // /plans/** → backend:3001/plans/**
+        source: '/plans/:path*',
+        destination: `${API_BASE_URL}/plans/:path*`,
+      },
     ];
   },
 };

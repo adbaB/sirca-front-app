@@ -147,6 +147,21 @@ export function ContractDetails({ contractId }: { contractId: string }) {
     }
   };
 
+  const getSurplusStatusProps = (status: string) => {
+    switch (status?.toLowerCase()) {
+      case "pending":
+        return { color: "#ca8a04", text: "Pendiente" };
+      case "applied":
+        return { color: "#16a34a", text: "Aplicado" };
+      case "refunded":
+        return { color: "#2563eb", text: "Reembolsado" };
+      case "cancelled":
+        return { color: "#dc2626", text: "Cancelado" };
+      default:
+        return { color: "#6b7f6b", text: status };
+    }
+  };
+
   if (loading) {
     return <Spinner className="py-24" />;
   }
@@ -340,6 +355,20 @@ export function ContractDetails({ contractId }: { contractId: string }) {
       (affiliatesPage - 1) * affiliatesLimit,
       affiliatesPage * affiliatesLimit,
     ) ?? [];
+
+  // Calculate total pending positive balance (saldo a favor)
+  const pendingSurpluses =
+    contract.surpluses?.filter((s) => s.status?.toLowerCase() === "pending") ||
+    [];
+  const totalSaldoFavorUsd = pendingSurpluses.reduce(
+    (sum, s) => sum + Number(s.amountUsd || 0),
+    0,
+  );
+  const totalSaldoFavorBs = pendingSurpluses.reduce(
+    (sum, s) => sum + Number(s.amountBs || 0),
+    0,
+  );
+  const hasSaldoFavor = totalSaldoFavorUsd > 0 || totalSaldoFavorBs > 0;
 
   return (
     <Can any={["read:contracts"]}>
@@ -564,10 +593,10 @@ export function ContractDetails({ contractId }: { contractId: string }) {
                 style={{ color: "#6b7f6b", borderBottom: "1px solid #e2ebe2" }}
               >
                 <div className="col-span-4">Nombre / Cédula</div>
-                <div className="col-span-3">Plan</div>
+                <div className="col-span-2">Plan</div>
                 <div className="col-span-2">Rol</div>
                 <div className="col-span-2">Estado</div>
-                <div className="col-span-1 text-right">Acciones</div>
+                <div className="col-span-2 text-right">Acciones</div>
               </div>
 
               {paginatedAffiliates.length > 0 ? (
@@ -615,7 +644,7 @@ export function ContractDetails({ contractId }: { contractId: string }) {
                             </p>
                           </div>
                         </div>
-                        <div className="col-span-3 hidden md:block">
+                        <div className="col-span-2 hidden md:block">
                           <p
                             className="text-sm font-medium"
                             style={{ color: "#1a2e1a" }}
@@ -647,7 +676,7 @@ export function ContractDetails({ contractId }: { contractId: string }) {
                               : "Inactivo"}
                           </Badge>
                         </div>
-                        <div className="col-span-1 flex items-center justify-end gap-1">
+                        <div className="col-span-2 flex items-center justify-end gap-1">
                           <Can permission="update:contracts">
                             <button
                               onClick={() => handleSetContractTitular(cp.id)}
@@ -1074,6 +1103,137 @@ export function ContractDetails({ contractId }: { contractId: string }) {
                 </Accordion>
               )}
             </Card>
+
+            {/* Anticipos (Surpluses) Card */}
+            {contract.surpluses && contract.surpluses.length > 0 && (
+              <Card>
+                <div
+                  className="px-6 py-4 border-b flex items-center justify-between"
+                  style={{ borderColor: "#e2ebe2" }}
+                >
+                  <h3
+                    className="text-sm font-bold uppercase tracking-wider flex items-center gap-2"
+                    style={{ color: "#1a2e1a" }}
+                  >
+                    <DollarSign
+                      className="h-4 w-4"
+                      style={{ color: "#16a34a" }}
+                    />
+                    Anticipos (Saldos a Favor)
+                  </h3>
+                </div>
+
+                <div className="divide-y divide-[#f1f5f1]">
+                  {[...contract.surpluses]
+                    .sort(
+                      (a, b) =>
+                        new Date(b.date).getTime() - new Date(a.date).getTime(),
+                    )
+                    .map((surplus) => {
+                      const surplusStatusProps = getSurplusStatusProps(
+                        surplus.status,
+                      );
+                      return (
+                        <div
+                          key={surplus.id}
+                          className="p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 transition-all duration-200 hover:bg-[#f8faf8]"
+                        >
+                          <div className="flex items-center gap-3">
+                            <div
+                              className="h-10 w-10 rounded-xl flex items-center justify-center shrink-0"
+                              style={{
+                                backgroundColor:
+                                  surplus.status === "applied"
+                                    ? "#e8f5e9"
+                                    : surplus.status === "cancelled"
+                                      ? "#ffebee"
+                                      : surplus.status === "refunded"
+                                        ? "#e3f2fd"
+                                        : "#fff9c4",
+                              }}
+                            >
+                              {surplus.status === "applied" ? (
+                                <CheckCircle2 className="h-5 w-5 text-green-600" />
+                              ) : surplus.status === "cancelled" ? (
+                                <AlertCircle className="h-5 w-5 text-red-600" />
+                              ) : (
+                                <Clock className="h-5 w-5 text-amber-600" />
+                              )}
+                            </div>
+                            <div>
+                              <div className="flex items-center gap-2">
+                                <p
+                                  className="text-sm font-bold"
+                                  style={{ color: "#1a2e1a" }}
+                                >
+                                  Anticipo recibido
+                                </p>
+                                <Badge color={surplusStatusProps.color}>
+                                  {surplusStatusProps.text}
+                                </Badge>
+                              </div>
+                              <p
+                                className="text-xs mt-0.5"
+                                style={{ color: "#6b7f6b" }}
+                              >
+                                Registrado el {formatDate(surplus.date)}
+                              </p>
+                              {surplus.payment ? (
+                                <p
+                                  className="text-xs mt-1 font-medium"
+                                  style={{ color: "#6b7f6b" }}
+                                >
+                                  Origen:{" "}
+                                  <span
+                                    className="font-semibold"
+                                    style={{ color: "#1a2e1a" }}
+                                  >
+                                    {translatePaymentMethod(
+                                      surplus.payment.paymentMethod,
+                                    )}
+                                  </span>{" "}
+                                  — Ref:{" "}
+                                  <span className="font-mono text-xs text-[#1a2e1a] font-semibold">
+                                    {surplus.payment.referenceNumber}
+                                  </span>
+                                </p>
+                              ) : null}
+                            </div>
+                          </div>
+
+                          <div className="flex items-center gap-4 sm:text-right">
+                            <div className="text-left sm:text-right">
+                              {surplus.amountUsd !== null &&
+                              surplus.amountUsd > 0 ? (
+                                <p className="text-base font-bold text-[#16a34a]">
+                                  {formatCurrency(surplus.amountUsd)}
+                                </p>
+                              ) : null}
+                              {surplus.amountBs !== null &&
+                              surplus.amountBs > 0 ? (
+                                <p className="text-xs font-semibold text-[#6b7f6b]">
+                                  {formatCurrencyBs(surplus.amountBs)}
+                                </p>
+                              ) : null}
+                            </div>
+                            {surplus.payment?.url && (
+                              <a
+                                href={surplus.payment.url}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="inline-flex items-center justify-center p-2 rounded-lg text-gray-500 hover:text-green-600 hover:bg-green-50 border border-gray-200 transition-colors"
+                                title="Ver comprobante de pago de origen"
+                              >
+                                <ExternalLink className="h-4 w-4" />
+                              </a>
+                            )}
+                          </div>
+                        </div>
+                      );
+                    })}
+                </div>
+              </Card>
+            )}
           </div>
 
           {/* Sidebar */}
@@ -1128,6 +1288,36 @@ export function ContractDetails({ contractId }: { contractId: string }) {
                   >
                     ${contract.monthlyAmount || "0.00"}
                   </span>
+                </div>
+
+                <div
+                  className="flex justify-between items-center pb-4"
+                  style={{ borderBottom: "1px solid #f1f5f1" }}
+                >
+                  <div
+                    className="flex items-center gap-2 text-sm"
+                    style={{ color: "#6b7f6b" }}
+                  >
+                    <DollarSign
+                      className="h-4 w-4"
+                      style={{ color: hasSaldoFavor ? "#16a34a" : "#6b7f6b" }}
+                    />
+                    Saldo a favor
+                  </div>
+                  <div className="text-right">
+                    <span
+                      className={`font-bold ${hasSaldoFavor ? "text-base text-[#16a34a]" : "text-sm text-[#6b7f6b]"}`}
+                    >
+                      {totalSaldoFavorUsd > 0
+                        ? formatCurrency(totalSaldoFavorUsd)
+                        : "$0.00"}
+                    </span>
+                    {totalSaldoFavorBs > 0 && (
+                      <p className="text-[10px] font-semibold text-[#6b7f6b] mt-0.5">
+                        {formatCurrencyBs(totalSaldoFavorBs)}
+                      </p>
+                    )}
+                  </div>
                 </div>
 
                 <div className="flex justify-between items-center">

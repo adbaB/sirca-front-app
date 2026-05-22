@@ -123,6 +123,7 @@ export interface Contract {
   code: string;
   contractPersons?: ContractPerson[];
   invoices?: Invoice[];
+  surpluses?: Surplus[] | null;
   advisor: Advisor;
   status: 'ACTIVE' | 'INACTIVE';
   createdAt: string;
@@ -149,6 +150,8 @@ export interface Payment {
   referenceNumber: string;
   status: 'PROCESSING' | 'COMPLETED' | 'REJECTED';
   metadata?: Record<string, any> | null;
+  person?: Person | null;
+  invoice?: Invoice | null;
   createdAt: string;
   updatedAt: string;
 }
@@ -162,9 +165,23 @@ export interface Invoice {
   paidAmount: number;
   status: 'PENDING' | 'PARTIAL' | 'PAID' | 'CANCELLED';
   payments?: Payment[];
+  contract?: Contract | null;
   createdAt: string;
   updatedAt: string;
 }
+
+export interface Surplus {
+  id: string;
+  amountBs: number | null;
+  amountUsd: number | null;
+  date: string;
+  status: 'pending' | 'applied' | 'refunded' | 'cancelled';
+  createdAt: string;
+  updatedAt: string;
+  payment: Payment;
+  invoice: Invoice | null;
+}
+
 
 export interface PaginationResponse<T> {
   data: T[];

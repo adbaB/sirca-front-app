@@ -2,13 +2,13 @@
 
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { User, Lock } from 'lucide-react';
+import { Mail, Lock } from 'lucide-react';
 import { Input } from '@/components/ui/Input';
 import { Button } from '@/components/ui/Button';
 
 export function LoginForm() {
   const router = useRouter();
-  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
@@ -17,7 +17,7 @@ export function LoginForm() {
     e.preventDefault();
     setError('');
 
-    if (!username.trim() || !password.trim()) {
+    if (!email.trim() || !password.trim()) {
       setError('Por favor completa todos los campos');
       return;
     }
@@ -28,13 +28,19 @@ export function LoginForm() {
       const res = await fetch('/api/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, password }),
+        body: JSON.stringify({ email, password }),
       });
 
+      const data = await res.json();
+
       if (!res.ok) {
-        const data = await res.json();
         setError(data.error || 'Error al iniciar sesión');
         return;
+      }
+
+      // Store user info in sessionStorage for client-side access
+      if (data.user) {
+        sessionStorage.setItem('sirca-user', JSON.stringify(data.user));
       }
 
       router.push('/dashboard');
@@ -57,7 +63,7 @@ export function LoginForm() {
           className="h-16 w-auto object-contain mb-2"
         />
         <p className="text-sm font-medium" style={{ color: '#6b7f6b' }}>
-          Panel de Estadísticas de Pagos
+          Panel de Administración
         </p>
       </div>
 
@@ -69,19 +75,19 @@ export function LoginForm() {
           Iniciar Sesión
         </h2>
         <p className="text-sm mb-6" style={{ color: '#6b7f6b' }}>
-          Ingresa tus credenciales para acceder al dashboard
+          Ingresa tus credenciales para acceder al panel
         </p>
 
         <form onSubmit={handleSubmit} className="flex flex-col gap-5">
           <Input
-            id="login-username"
-            label="Usuario"
-            type="text"
-            placeholder="Tu nombre de usuario"
-            icon={<User className="h-4 w-4" />}
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            autoComplete="username"
+            id="login-email"
+            label="Correo Electrónico"
+            type="email"
+            placeholder="tu@correo.com"
+            icon={<Mail className="h-4 w-4" />}
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            autoComplete="email"
           />
           <Input
             id="login-password"

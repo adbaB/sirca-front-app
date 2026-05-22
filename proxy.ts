@@ -28,9 +28,10 @@ export async function proxy(request: NextRequest) {
   const payload = await verifyToken(sessionCookie.value);
 
   if (!payload) {
-    // Invalid or expired token — clear cookie and redirect
+    // Invalid or expired token — clear cookies and redirect
     const response = NextResponse.redirect(new URL('/login', request.url));
     response.cookies.set('sirca-session', '', { maxAge: 0, path: '/' });
+    response.cookies.set('access_token', '', { maxAge: 0, path: '/' });
     return response;
   }
 

@@ -93,3 +93,103 @@ export interface AuthUser {
 export interface LoginResponse {
   user: AuthUser;
 }
+
+/* ──────────────────────────────────────────────────────
+   Contracts, Affiliates, Payments Types
+   ────────────────────────────────────────────────────── */
+
+export interface Plan {
+  id: string;
+  name: string;
+}
+
+export interface Person {
+  id: string;
+  typeIdentityCard: 'V' | 'E' | 'P' | 'J' | 'G' | 'C' |'PN';
+  identityCard: string;
+  name: string;
+  birthDate?: Date;
+  gender?: boolean;
+  plan: Plan;
+  status: 'ACTIVE' | 'INACTIVE';
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface Contract {
+  id: string;
+  affiliationDate: Date;
+  monthlyAmount: number;
+  code: string;
+  contractPersons?: ContractPerson[];
+  invoices?: Invoice[];
+  surpluses?: Surplus[] | null;
+  advisor: Advisor;
+  status: 'ACTIVE' | 'INACTIVE';
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface ContractPerson {
+  id: string;
+  contract: Contract;
+  person: Person;
+  role: 'TITULAR' | 'AFILIADO';
+  isBillingOwner: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface Payment {
+  id: string;
+  paymentDate: string;
+  amount: number;
+  amountBs?: number | null;
+  url?: string | null;
+  paymentMethod: string;
+  referenceNumber: string;
+  status: 'PROCESSING' | 'COMPLETED' | 'REJECTED';
+  metadata?: Record<string, any> | null;
+  person?: Person | null;
+  invoice?: Invoice | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface Invoice {
+  id: string;
+  billingMonth: string;
+  issueDate: string;
+  dueDate: string;
+  totalAmount: number;
+  paidAmount: number;
+  status: 'PENDING' | 'PARTIAL' | 'PAID' | 'CANCELLED';
+  payments?: Payment[];
+  contract?: Contract | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface Surplus {
+  id: string;
+  amountBs: number | null;
+  amountUsd: number | null;
+  date: string;
+  status: 'pending' | 'applied' | 'refunded' | 'cancelled';
+  createdAt: string;
+  updatedAt: string;
+  payment: Payment;
+  invoice: Invoice | null;
+}
+
+
+export interface PaginationResponse<T> {
+  data: T[];
+  meta: {
+    totalItems: number;
+    itemCount: number;
+    itemsPerPage: number;
+    totalPages: number;
+    currentPage: number;
+  };
+}

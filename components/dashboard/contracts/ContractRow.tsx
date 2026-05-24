@@ -75,7 +75,7 @@ export function ContractRow({ contract, isLast }: ContractRowProps) {
       </div>
       <div className="col-span-1 flex items-center justify-end">
         <Link
-          href={`/dashboard/contratos/${contract.id}`}
+          href={`/dashboard/contratos/${contract.id}?from=contratos`}
           className="inline-flex items-center justify-center h-8 px-3 text-xs font-medium rounded-lg transition-colors hover:scale-105"
           style={{ backgroundColor: '#dcfce7', color: '#16a34a' }}
         >

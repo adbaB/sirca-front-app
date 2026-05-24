@@ -51,7 +51,7 @@ export function useUsers() {
     return () => { cancelled = true; };
   }, []);
 
-  const createUser = async (payload: { email: string; password: string; roleId?: string }) => {
+  const createUser = async (payload: { email: string; password: string; roleId?: string; advisorId?: string | null }) => {
     const res = await fetch('/users', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -65,7 +65,7 @@ export function useUsers() {
     return res.json();
   };
 
-  const updateUser = async (id: string, payload: { email?: string; isActive?: boolean }) => {
+  const updateUser = async (id: string, payload: { email?: string; isActive?: boolean; roleId?: string | null; advisorId?: string | null }) => {
     const res = await fetch(`/users/${id}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },

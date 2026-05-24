@@ -25,25 +25,31 @@ import {
   ExternalLink,
   FileText,
   Plus,
+  Search,
   Star,
   Trash2,
   UserCheck,
   User as UserIcon,
 } from "lucide-react";
 import Link from "next/link";
-import { useState } from "react";
+import { useSearchParams } from "next/navigation";
+import { useState, useMemo } from "react";
 import { BeneficiaryFormModal } from "./BeneficiaryFormModal";
 import { ContractFormModal } from "./ContractFormModal";
 import { DeleteBeneficiaryModal } from "./DeleteBeneficiaryModal";
 import { EditBeneficiaryModal } from "./EditBeneficiaryModal";
 
 export function ContractDetails({ contractId }: { contractId: string }) {
+  const searchParams = useSearchParams();
+  const from = searchParams.get("from");
+  const backUrl = from === "seguimiento" ? "/dashboard/seguimiento" : "/dashboard/contratos";
+  const backLabel = from === "seguimiento" ? "Volver a seguimiento" : "Volver a contratos";
+
   const {
     contract,
     loading,
     error,
     updateContract,
-    fetchContract,
     addBeneficiary,
     setContractTitular,
     setBillingOwner,
@@ -54,9 +60,15 @@ export function ContractDetails({ contractId }: { contractId: string }) {
   const [actionLoading, setActionLoading] = useState(false);
   const [actionError, setActionError] = useState("");
 
-  // States for affiliates pagination
+  // States for affiliates pagination and search
   const [affiliatesPage, setAffiliatesPage] = useState(1);
   const affiliatesLimit = 3;
+  const [affiliatesSearch, setAffiliatesSearch] = useState("");
+
+  const handleAffiliatesSearchChange = (val: string) => {
+    setAffiliatesSearch(val);
+    setAffiliatesPage(1);
+  };
 
   // States for managing beneficiaries
   const [showAddBeneficiaryModal, setShowAddBeneficiaryModal] = useState(false);
@@ -75,6 +87,21 @@ export function ContractDetails({ contractId }: { contractId: string }) {
   const [viewingMetadataPaymentId, setViewingMetadataPaymentId] = useState<
     string | null
   >(null);
+
+  // Filter affiliates client-side (unconditionally at the top before early returns)
+  const filteredAffiliates = useMemo(() => {
+    const list = contract?.contractPersons || [];
+    if (!affiliatesSearch.trim()) return list;
+    const term = affiliatesSearch.toLowerCase().trim();
+    return list.filter((cp) => {
+      const name = cp.person?.name?.toLowerCase() || "";
+      const doc = cp.person?.identityCard?.toLowerCase() || "";
+      const typeDoc = cp.person?.typeIdentityCard?.toLowerCase() || "";
+      const combinedDoc = `${typeDoc}-${doc}`.toLowerCase();
+      
+      return name.includes(term) || doc.includes(term) || combinedDoc.includes(term);
+    });
+  }, [contract?.contractPersons, affiliatesSearch]);
 
   // Helper functions for formatting and translations
   const formatBillingMonth = (monthStr: string) => {
@@ -190,10 +217,10 @@ export function ContractDetails({ contractId }: { contractId: string }) {
         <div>
           <p className="font-medium">{error || "Contrato no encontrado"}</p>
           <Link
-            href="/dashboard/contratos"
+            href={backUrl}
             className="text-xs underline mt-1 inline-block opacity-80 hover:opacity-100"
           >
-            Volver a contratos
+            {backLabel}
           </Link>
         </div>
       </div>
@@ -331,30 +358,14 @@ export function ContractDetails({ contractId }: { contractId: string }) {
     }
   };
 
-  const getPaymentStatusIcon = (status: string) => {
-    switch (status) {
-      case "verified":
-        return <CheckCircle2 className="h-4 w-4 text-green-600" />;
-      case "unverified":
-        return <AlertCircle className="h-4 w-4 text-red-600" />;
-      case "partial":
-        return <Clock className="h-4 w-4 text-blue-600" />;
-      case "pending":
-        return <Clock className="h-4 w-4 text-yellow-600" />;
-      default:
-        return null;
-    }
-  };
-
-  // Calculations for affiliates client-side pagination
-  const totalAffiliates = contract.contractPersons?.length ?? 0;
+  // Calculations for filtered and paginated affiliates client-side
+  const totalAffiliates = filteredAffiliates.length;
   const totalAffiliatesPages =
     Math.ceil(totalAffiliates / affiliatesLimit) || 1;
-  const paginatedAffiliates =
-    contract.contractPersons?.slice(
-      (affiliatesPage - 1) * affiliatesLimit,
-      affiliatesPage * affiliatesLimit,
-    ) ?? [];
+  const paginatedAffiliates = filteredAffiliates.slice(
+    (affiliatesPage - 1) * affiliatesLimit,
+    affiliatesPage * affiliatesLimit,
+  );
 
   // Calculate total pending positive balance (saldo a favor)
   const pendingSurpluses =
@@ -379,11 +390,11 @@ export function ContractDetails({ contractId }: { contractId: string }) {
           style={{ color: "#6b7f6b" }}
         >
           <Link
-            href="/dashboard/contratos"
+            href={backUrl}
             className="hover:text-[#16a34a] flex items-center gap-1 transition-colors"
           >
             <ChevronLeft className="h-4 w-4" />
-            Volver a contratos
+            {backLabel}
           </Link>
         </div>
 
@@ -585,6 +596,27 @@ export function ContractDetails({ contractId }: { contractId: string }) {
                     Agregar Beneficiario
                   </button>
                 </Can>
+              </div>
+
+              {/* Affiliate Search Bar */}
+              <div className="px-6 py-3.5 border-b" style={{ borderColor: "#e2ebe2" }}>
+                <div className="relative">
+                  <input
+                    type="text"
+                    placeholder="Buscar afiliado por nombre o número de documento..."
+                    value={affiliatesSearch}
+                    onChange={(e) => handleAffiliatesSearchChange(e.target.value)}
+                    className="w-full pl-10 pr-4 py-2 text-sm rounded-xl border focus:outline-none focus:border-[#16a34a] focus:ring-2 focus:ring-[#16a34a]/20 transition-all duration-200"
+                    style={{
+                      borderColor: "#e2ebe2",
+                      backgroundColor: "#fcfdfc",
+                      color: "#1a2e1a",
+                    }}
+                  />
+                  <div className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400">
+                    <Search className="h-4 w-4" />
+                  </div>
+                </div>
               </div>
 
               {/* Table Column Headers */}

@@ -1,9 +1,9 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useCallback } from 'react';
 import type { Contract, PaginationResponse } from '@/lib/types';
 
-export function useContracts(initialPage = 1, initialLimit = 10) {
+export function useContracts(initialPage = 1, initialLimit = 10, advisorId: string | null = null) {
   const [contracts, setContracts] = useState<Contract[]>([]);
   const [meta, setMeta] = useState<PaginationResponse<Contract>['meta']>({
     totalItems: 0,
@@ -15,49 +15,38 @@ export function useContracts(initialPage = 1, initialLimit = 10) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const fetchContracts = useCallback(async (page: number, limit: number, search?: string) => {
+  const fetchContracts = useCallback(async (
+    page: number, 
+    limit: number, 
+    search?: string, 
+    advId?: string | null, 
+    stage?: string,
+    month?: string | null,
+    year?: string | null
+  ) => {
     try {
       setLoading(true);
       const searchParam = search ? `&search=${encodeURIComponent(search)}` : '';
-      const res = await fetch(`/contracts?page=${page}&limit=${limit}${searchParam}`);
+      const filterAdvisorId = advId !== undefined ? advId : advisorId;
+      const advisorParam = filterAdvisorId ? `&advisorId=${encodeURIComponent(filterAdvisorId)}` : '';
+      const stageParam = stage ? `&stage=${encodeURIComponent(stage)}` : '';
+      const monthParam = month ? `&month=${encodeURIComponent(month)}` : '';
+      const yearParam = year ? `&year=${encodeURIComponent(year)}` : '';
+      
+      const res = await fetch(`/contracts?page=${page}&limit=${limit}${searchParam}${advisorParam}${stageParam}${monthParam}${yearParam}`);
       if (!res.ok) throw new Error('Error cargando contratos');
       const data: PaginationResponse<Contract> = await res.json();
       setContracts(data.data || []);
-      setMeta(data.meta || { total: 0, page, lastPage: 1, limit });
+      setMeta(data.meta || { totalItems: 0, itemCount: 0, itemsPerPage: limit, totalPages: 1, currentPage: page });
       setError(null);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Error desconocido');
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [advisorId]);
 
-  useEffect(() => {
-    let cancelled = false;
 
-    async function load() {
-      try {
-        setLoading(true);
-        const res = await fetch(`/contracts?page=${initialPage}&limit=${initialLimit}`);
-        if (!res.ok) throw new Error('Error cargando contratos');
-        const data = await res.json() as PaginationResponse<Contract>;
-        if (!cancelled) {
-          setContracts(data.data || []);
-          setMeta(data.meta || { total: 0, page: initialPage, lastPage: 1, limit: initialLimit });
-          setError(null);
-        }
-      } catch (err) {
-        if (!cancelled) {
-          setError(err instanceof Error ? err.message : 'Error desconocido');
-        }
-      } finally {
-        if (!cancelled) setLoading(false);
-      }
-    }
-
-    load();
-    return () => { cancelled = true; };
-  }, [initialPage, initialLimit]);
 
   return { contracts, meta, loading, error, fetchContracts };
 }

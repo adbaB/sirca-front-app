@@ -168,12 +168,12 @@ function PermissionsInner({
                       />
                     </span>
                     <div className="min-w-0">
-                      <p className="text-sm font-medium" style={{ color: '#1a2e1a' }}>
-                        {perm.name}
+                      <p className="text-sm font-medium animate-fade-in" style={{ color: '#1a2e1a' }}>
+                        {perm.description || perm.name}
                       </p>
                       {perm.description && (
-                        <p className="text-xs truncate" style={{ color: '#6b7f6b' }}>
-                          {perm.description}
+                        <p className="text-[11px] font-mono mt-0.5" style={{ color: '#8c9e8c' }}>
+                          Código técnico: {perm.name}
                         </p>
                       )}
                     </div>

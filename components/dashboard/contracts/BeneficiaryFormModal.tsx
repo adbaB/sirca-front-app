@@ -1,13 +1,12 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { X, User, Shield, CreditCard } from 'lucide-react';
+import { User, Shield, CreditCard } from 'lucide-react';
 import { Modal } from '@/components/ui/Modal';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { usePlans } from '@/hooks/usePlans';
 import { usePersons } from '@/hooks/usePersons';
-import type { Plan } from '@/lib/types';
 
 interface BeneficiaryFormModalProps {
   isOpen: boolean;
@@ -42,7 +41,7 @@ export function BeneficiaryFormModal({
   const [isBillingOwner, setIsBillingOwner] = useState(false);
 
   const { plans, loading: plansLoading } = usePlans();
-  const { findByIdentity, loading: isCheckingPersons } = usePersons();
+  const { findByIdentity } = usePersons();
 
   const [isChecking, setIsChecking] = useState(false);
   const [personExists, setPersonExists] = useState(false);

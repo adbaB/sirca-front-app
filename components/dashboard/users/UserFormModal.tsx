@@ -1,17 +1,18 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Mail, Lock, Shield } from 'lucide-react';
+import { Mail, Lock, Shield, User as UserIcon } from 'lucide-react';
 import { Modal } from '@/components/ui/Modal';
 import { Input } from '@/components/ui/Input';
 import { Button } from '@/components/ui/Button';
 import { Switch } from '@/components/ui/Switch';
+import { useAdvisors } from '@/hooks/useAdvisors';
 import type { User, Role } from '@/lib/types';
 
 interface UserFormModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSubmit: (data: { email: string; password: string; roleId?: string; isActive?: boolean }) => Promise<void>;
+  onSubmit: (data: { email: string; password: string; roleId?: string; isActive?: boolean; advisorId?: string | null }) => Promise<void>;
   roles: Role[];
   loading: boolean;
   error: string;
@@ -21,12 +22,14 @@ interface UserFormModalProps {
 /* ─── Inner form — state is initialized directly from props on mount ─── */
 function UserFormInner({ onClose, onSubmit, roles, loading, error, user }: Omit<UserFormModalProps, 'isOpen'>) {
   const isEditing = !!user;
+  const { advisors } = useAdvisors();
 
   // State initialised once from props — no useEffect needed.
   // The parent resets this by changing the `key` on each open.
   const [email, setEmail] = useState(user?.email ?? '');
   const [password, setPassword] = useState('');
   const [roleId, setRoleId] = useState(user?.roleId ?? '');
+  const [advisorId, setAdvisorId] = useState(user?.advisorId ?? '');
   const [isActive, setIsActive] = useState(user?.isActive ?? true);
   const [validationError, setValidationError] = useState('');
 
@@ -52,9 +55,10 @@ function UserFormInner({ onClose, onSubmit, roles, loading, error, user }: Omit<
     const data: Record<string, unknown> = { email };
     if (!isEditing) data.password = password;
     if (roleId) data.roleId = roleId;
+    data.advisorId = advisorId || null;
     if (isEditing) data.isActive = isActive;
 
-    await onSubmit(data as { email: string; password: string; roleId?: string; isActive?: boolean });
+    await onSubmit(data as { email: string; password: string; roleId?: string; isActive?: boolean; advisorId?: string | null });
   };
 
   const displayError = validationError || error;
@@ -113,6 +117,40 @@ function UserFormInner({ onClose, onSubmit, roles, loading, error, user }: Omit<
             {roles.map((role) => (
               <option key={role.id} value={role.id}>
                 {role.name} {role.description ? `— ${role.description}` : ''}
+              </option>
+            ))}
+          </select>
+        </div>
+      </div>
+
+      {/* Advisor Selector */}
+      <div className="flex flex-col gap-1.5 animate-fade-in">
+        <label htmlFor="user-form-advisor" className="text-sm font-semibold" style={{ color: '#374151' }}>
+          Asesor Vinculado
+        </label>
+        <div className="relative">
+          <div className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2" style={{ color: '#9ca3af' }}>
+            <UserIcon className="h-4 w-4" />
+          </div>
+          <select
+            id="user-form-advisor"
+            value={advisorId}
+            onChange={(e) => setAdvisorId(e.target.value)}
+            className="w-full appearance-none rounded-xl border bg-white text-sm py-3 pl-11 pr-4 transition-all duration-200 focus:outline-none"
+            style={{ borderColor: '#e2ebe2', color: '#1a2e1a' }}
+            onFocus={(e) => {
+              e.currentTarget.style.borderColor = '#16a34a';
+              e.currentTarget.style.boxShadow = '0 0 0 3px rgba(22,163,74,0.1)';
+            }}
+            onBlur={(e) => {
+              e.currentTarget.style.borderColor = '#e2ebe2';
+              e.currentTarget.style.boxShadow = 'none';
+            }}
+          >
+            <option value="">Sin asesor vinculado</option>
+            {advisors.map((adv) => (
+              <option key={adv.id} value={adv.id}>
+                {adv.name}
               </option>
             ))}
           </select>

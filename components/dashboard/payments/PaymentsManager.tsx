@@ -36,7 +36,7 @@ export function PaymentsManager() {
     fetchPayments,
     approvePayment,
     rejectPayment,
-  } = usePayments(page, limit, statusFilter);
+  } = usePayments(page, limit);
 
   // Debounce search text and reset page to 1 asynchronously
   useEffect(() => {

@@ -46,6 +46,7 @@ export async function POST(request: Request) {
       email: loginData.user.email,
       role: loginData.user.role?.name ?? null,
       permissions: loginData.user.permissions ?? [],
+      advisorId: loginData.user.advisorId ?? null,
     };
 
     const token = await signToken(sessionPayload);

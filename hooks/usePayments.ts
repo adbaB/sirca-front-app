@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import type { Payment, PaginationResponse } from '@/lib/types';
 
-export function usePayments(initialPage = 1, initialLimit = 10, initialStatus?: string) {
+export function usePayments(initialPage = 1, initialLimit = 10) {
   const [payments, setPayments] = useState<Payment[]>([]);
   const [selectedPayment, setSelectedPayment] = useState<Payment | null>(null);
   const [meta, setMeta] = useState<PaginationResponse<Payment>['meta']>({

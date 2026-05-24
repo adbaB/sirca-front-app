@@ -24,7 +24,7 @@ export function UserRow({ user, roles, isLast, onEdit, onDelete, onAssignRole, a
       style={isLast ? {} : { borderBottom: '1px solid #f1f5f1' }}
     >
       {/* User Info */}
-      <div className="col-span-4 flex items-center gap-3">
+      <div className="col-span-3 flex items-center gap-3">
         <div
           className="h-10 w-10 rounded-xl flex items-center justify-center shrink-0 transition-transform duration-200 group-hover:scale-105"
           style={{
@@ -40,7 +40,7 @@ export function UserRow({ user, roles, isLast, onEdit, onDelete, onAssignRole, a
             {user.email}
           </p>
           <p className="text-xs truncate md:hidden" style={{ color: '#6b7f6b' }}>
-            {user.role?.name ?? 'Sin rol'}
+            {user.role?.name ?? 'Sin rol'} {user.advisor ? `(${user.advisor.name})` : ''}
           </p>
         </div>
       </div>
@@ -73,8 +73,8 @@ export function UserRow({ user, roles, isLast, onEdit, onDelete, onAssignRole, a
                 <button
                   key={role.id}
                   onClick={async () => {
-                    await onAssignRole(user.id, role.id);
-                    setShowRoleDropdown(false);
+                     await onAssignRole(user.id, role.id);
+                     setShowRoleDropdown(false);
                   }}
                   className="w-full text-left px-4 py-2 text-sm transition-colors duration-150 hover:bg-[#f0fdf4]"
                   style={{
@@ -100,6 +100,13 @@ export function UserRow({ user, roles, isLast, onEdit, onDelete, onAssignRole, a
         )}
       </div>
 
+      {/* Advisor */}
+      <div className="col-span-2 hidden md:block">
+        <p className="text-xs font-semibold" style={{ color: '#374151' }}>
+          {user.advisor?.name ?? <span className="italic" style={{ color: '#9ca3af' }}>Sin asesor</span>}
+        </p>
+      </div>
+
       {/* Status */}
       <div className="col-span-2 hidden md:block">
         <Badge color={user.isActive ? '#16a34a' : '#dc2626'}>
@@ -108,7 +115,7 @@ export function UserRow({ user, roles, isLast, onEdit, onDelete, onAssignRole, a
       </div>
 
       {/* ID */}
-      <div className="col-span-2 hidden md:block">
+      <div className="col-span-1 hidden md:block">
         <p
           className="text-xs font-mono truncate"
           style={{ color: '#9ca3af' }}

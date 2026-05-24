@@ -7,6 +7,7 @@ interface SessionData {
   email: string;
   role: string | null;
   permissions: string[];
+  advisorId: string | null;
 }
 
 interface UsePermissionsReturn {
@@ -14,6 +15,8 @@ interface UsePermissionsReturn {
   permissions: string[];
   /** Rol del usuario, ej: "admin" */
   role: string | null;
+  /** ID del asesor vinculado si lo hay */
+  advisorId: string | null;
   /** true mientras se decodifica la sesión */
   loading: boolean;
   /** Devuelve true si el usuario tiene el permiso indicado */
@@ -63,10 +66,12 @@ export function usePermissions(): UsePermissionsReturn {
 
   const permissions = session?.permissions ?? [];
   const role = session?.role ?? null;
+  const advisorId = session?.advisorId ?? null;
 
   return {
     permissions,
     role,
+    advisorId,
     loading,
     can: (permission: string) => permissions.includes(permission),
     canAny: (perms: string[]) => perms.some((p) => permissions.includes(p)),

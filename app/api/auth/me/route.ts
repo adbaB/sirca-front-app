@@ -28,6 +28,7 @@ export async function GET() {
       email: payload.email,
       role: payload.role ?? null,
       permissions: Array.isArray(payload.permissions) ? payload.permissions : [],
+      advisorId: payload.advisorId ?? null,
     });
   } catch {
     return NextResponse.json({ error: 'Error interno' }, { status: 500 });

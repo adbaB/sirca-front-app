@@ -3,7 +3,7 @@
 import React from 'react';
 import type { Payment, PaginationResponse } from '@/lib/types';
 import { Loader2, AlertCircle, CreditCard, ChevronRight } from 'lucide-react';
-import { getMethodStyle, getStatusStyle } from './paymentUtils';
+import { getMethodStyle } from './paymentUtils';
 
 interface PaymentsListProps {
   payments: Payment[];

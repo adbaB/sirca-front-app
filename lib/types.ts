@@ -78,6 +78,8 @@ export interface User {
   isActive: boolean;
   roleId: string | null;
   role: Role | null;
+  advisorId?: string | null;
+  advisor?: Advisor | null;
 }
 
 /** Auth response — returned by POST /auth/login */
@@ -87,6 +89,7 @@ export interface AuthUser {
   isActive: boolean;
   role: { id: string; name: string } | null;
   permissions: string[];
+  advisorId?: string | null;
 }
 
 /** Login response shape */

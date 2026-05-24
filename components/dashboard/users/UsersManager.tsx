@@ -46,7 +46,7 @@ export function UsersManager() {
   const activeCount = users.filter((u) => u.isActive).length;
   const inactiveCount = users.filter((u) => !u.isActive).length;
 
-  const handleCreate = async (data: { email: string; password: string; roleId?: string }) => {
+  const handleCreate = async (data: { email: string; password: string; roleId?: string; advisorId?: string | null }) => {
     setActionLoading(true);
     setActionError('');
     try {
@@ -59,7 +59,7 @@ export function UsersManager() {
     }
   };
 
-  const handleUpdate = async (id: string, data: { email?: string; isActive?: boolean }) => {
+  const handleUpdate = async (id: string, data: { email?: string; isActive?: boolean; roleId?: string | null; advisorId?: string | null }) => {
     setActionLoading(true);
     setActionError('');
     try {
@@ -258,10 +258,11 @@ export function UsersManager() {
               className="hidden md:grid grid-cols-12 gap-4 px-6 py-3 text-xs font-semibold uppercase tracking-wider"
               style={{ color: '#6b7f6b', borderBottom: '1px solid #e2ebe2' }}
             >
-              <div className="col-span-4">Usuario</div>
+              <div className="col-span-3">Usuario</div>
               <div className="col-span-2">Rol</div>
+              <div className="col-span-2">Asesor</div>
               <div className="col-span-2">Estado</div>
-              <div className="col-span-2">ID</div>
+              <div className="col-span-1">ID</div>
               <div className="col-span-2 text-right">Acciones</div>
             </div>
 

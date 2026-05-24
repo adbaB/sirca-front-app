@@ -2,8 +2,9 @@
 
 import { useState, useEffect } from 'react';
 import { usePathname } from 'next/navigation';
-import { LayoutDashboard, Users, X, Shield, FileText, CreditCard } from 'lucide-react';
+import { LayoutDashboard, Users, X, Shield, FileText, CreditCard, TrendingUp } from 'lucide-react';
 import { Can } from '../ui/Can';
+import Link from 'next/link';
 
 interface SidebarProps {
   isOpen: boolean;
@@ -12,6 +13,7 @@ interface SidebarProps {
 
 const navItems = [
   { label: 'Dashboard', href: '/dashboard', icon: LayoutDashboard, permission: 'read:statistics' },
+  { label: 'Seguimiento', href: '/dashboard/seguimiento', icon: TrendingUp, permission: 'read:pipeline' },
   { label: 'Usuarios', href: '/dashboard/usuarios', icon: Users, permission: 'read:users' },
   { label: 'Roles', href: '/dashboard/roles', icon: Shield, permission: 'read:roles' },
   { label: 'Contratos', href: '/dashboard/contratos', icon: FileText, permission: 'read:contracts' },
@@ -70,7 +72,7 @@ function SidebarContent({ pathname, onClose }: { pathname: string; onClose?: () 
             return (
               <Can permission={item.permission} key={item.href}>
                 <li >
-                <a
+                <Link
                   href={item.href}
                   onClick={onClose}
                   className="relative flex items-center justify-between rounded-xl px-3 py-2.5 text-sm font-medium transition-all duration-200"
@@ -100,7 +102,7 @@ function SidebarContent({ pathname, onClose }: { pathname: string; onClose?: () 
                       {pendingPaymentsCount}
                     </span>
                   )}
-                </a>
+                </Link>
                 </li>
               </Can>
 

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { FilterBar } from '@/components/dashboard/FilterBar';
 import { KpiGrid } from '@/components/dashboard/KpiGrid';
 import { PaymentStatusChart } from '@/components/dashboard/PaymentStatusChart';
@@ -9,29 +9,42 @@ import { PaymentBreakdownTable } from '@/components/dashboard/PaymentBreakdownTa
 import { Spinner } from '@/components/ui/Spinner';
 import { useAdvisors } from '@/hooks/useAdvisors';
 import { useStatistics } from '@/hooks/useStatistics';
+import { usePermissions } from '@/hooks/usePermissions';
 import type { DashboardFilters } from '@/lib/types';
 import { Can } from '@/components/ui/Can';
 
 const now = new Date();
 
 export default function DashboardPage() {
+  const { advisorId } = usePermissions();
+  const { advisors } = useAdvisors();
+
   const [filters, setFilters] = useState<DashboardFilters>({
     year: now.getFullYear(),
     month: now.getMonth() + 1,
     advisorUuid: 'all',
   });
 
-  const { advisors } = useAdvisors();
-  const { data, loading } = useStatistics(filters);
+  // Dynamically derive active filters to avoid synchronous state-sync side-effects
+  const activeFilters = useMemo(() => ({
+    ...filters,
+    advisorUuid: advisorId || filters.advisorUuid,
+  }), [filters, advisorId]);
+
+  const { data, loading } = useStatistics(activeFilters);
+
+  const displayedAdvisors = advisorId
+    ? advisors.filter((a) => a.id === advisorId)
+    : advisors;
 
   return (
     <div className="flex flex-col gap-6">
       <Can permission='read:statistics'>
       {/* Filter Bar */}
         <FilterBar
-          filters={filters}
+          filters={activeFilters}
           onFiltersChange={setFilters}
-          advisors={advisors}
+          advisors={displayedAdvisors}
           loading={loading}
         />
 

@@ -1,21 +1,21 @@
-'use client';
+"use client";
 
-import React, { useState, useEffect } from 'react';
-import type { Payment } from '@/lib/types';
-import { 
-  FileText, 
-  Calendar, 
-  User, 
-  Landmark, 
-  Eye, 
-  ZoomIn, 
-  AlertTriangle, 
-  CheckCircle2, 
-  AlertCircle, 
-  Loader2, 
-  Check 
-} from 'lucide-react';
-import { formatDate, getMethodStyle, getStatusStyle } from './paymentUtils';
+import type { Payment } from "@/lib/types";
+import {
+  AlertCircle,
+  AlertTriangle,
+  Calendar,
+  Check,
+  CheckCircle2,
+  Eye,
+  FileText,
+  Landmark,
+  Loader2,
+  User,
+  ZoomIn,
+} from "lucide-react";
+import { useEffect, useState } from "react";
+import { formatDate, getMethodStyle, getStatusStyle } from "./paymentUtils";
 
 interface PaymentVisorProps {
   selectedPayment: Payment | null;
@@ -37,18 +37,22 @@ export function PaymentVisor({
   onZoomOpen,
 }: PaymentVisorProps) {
   const [isRejecting, setIsRejecting] = useState(false);
-  const [rejectionReason, setRejectionReason] = useState('');
+  const [rejectionReason, setRejectionReason] = useState("");
 
   // Reset local state when active payment changes
   useEffect(() => {
-    setIsRejecting(false);
-    setRejectionReason('');
-    setActionError(null);
+    const resetTimeout = window.setTimeout(() => {
+      setIsRejecting(false);
+      setRejectionReason("");
+      setActionError(null);
+    }, 0);
+
+    return () => window.clearTimeout(resetTimeout);
   }, [selectedPayment?.id, setActionError]);
 
   const handleLocalReject = () => {
     if (!rejectionReason.trim()) {
-      setActionError('Debes ingresar un motivo para rechazar el pago.');
+      setActionError("Debes ingresar un motivo para rechazar el pago.");
       return;
     }
     onReject(rejectionReason);
@@ -56,14 +60,18 @@ export function PaymentVisor({
 
   if (!selectedPayment) {
     return (
-      <div className="lg:col-span-7 flex flex-col bg-white rounded-2xl border border-[#e2ebe2] overflow-hidden min-h-[550px] shadow-sm">
+      <div className="lg:col-span-7 flex flex-col bg-white rounded-2xl border border-[#e2ebe2] overflow-hidden min-h-137.5 shadow-sm">
         <div className="flex-1 flex flex-col items-center justify-center p-12 text-center text-[#6b7f6b] my-auto">
           <div className="h-16 w-16 rounded-2xl bg-[#f4fbf4] flex items-center justify-center text-[#16a34a] mb-4">
             <FileText className="h-8 w-8" />
           </div>
-          <h3 className="text-base font-bold text-[#1a2e1a]">Visor de Verificación</h3>
+          <h3 className="text-base font-bold text-[#1a2e1a]">
+            Visor de Verificación
+          </h3>
           <p className="text-sm text-[#6b7f6b] max-w-sm mt-1">
-            Selecciona cualquier reporte de pago de la lista de la izquierda para verificar su comprobante bancario, revisar metadatos y emitir tu veredicto.
+            Selecciona cualquier reporte de pago de la lista de la izquierda
+            para verificar su comprobante bancario, revisar metadatos y emitir
+            tu veredicto.
           </p>
         </div>
       </div>
@@ -74,34 +82,42 @@ export function PaymentVisor({
   const status = getStatusStyle(selectedPayment.status);
 
   return (
-    <div className="lg:col-span-7 flex flex-col bg-white rounded-2xl border border-[#e2ebe2] overflow-hidden min-h-[550px] shadow-sm">
+    <div className="lg:col-span-7 flex flex-col bg-white rounded-2xl border border-[#e2ebe2] overflow-hidden min-h-137.5 shadow-sm">
       <div className="flex-1 flex flex-col h-full">
         {/* Header inside visor */}
         <div className="p-4 border-b border-[#e2ebe2] bg-[#fcfdfc] flex items-center justify-between flex-wrap gap-2">
           <div className="flex items-center gap-2">
-            <h3 className="font-bold text-[#1a2e1a] text-sm">Detalles del Reporte</h3>
-            <span className={`inline-flex items-center gap-1 rounded-md px-2 py-0.5 text-xs font-semibold ring-1 ring-inset ${status.bg}`}>
+            <h3 className="font-bold text-[#1a2e1a] text-sm">
+              Detalles del Reporte
+            </h3>
+            <span
+              className={`inline-flex items-center gap-1 rounded-md px-2 py-0.5 text-xs font-semibold ring-1 ring-inset ${status.bg}`}
+            >
               <span className={`h-1.5 w-1.5 rounded-full ${status.dot}`}></span>
               {status.label}
             </span>
           </div>
-          
-          <span className={`inline-flex items-center gap-1 rounded-md px-2.5 py-0.5 text-xs font-bold ${method.bg} ${method.text}`}>
+
+          <span
+            className={`inline-flex items-center gap-1 rounded-md px-2.5 py-0.5 text-xs font-bold ${method.bg} ${method.text}`}
+          >
             {method.label}
           </span>
         </div>
 
         {/* Visor Content */}
-        <div className="p-6 flex-1 flex flex-col gap-6 overflow-y-auto max-h-[580px]">
+        <div className="p-6 flex-1 flex flex-col gap-6 overflow-y-auto max-h-145">
           {/* 🟩 ELEGANT HIGHLIGHT: MES DE PAGO */}
           <div className="bg-[#f0f9f0] border border-[#d2eed2] p-4 rounded-xl flex items-center gap-3">
             <Calendar className="h-5 w-5 text-[#16a34a]" />
             <div>
-              <p className="text-xs text-[#6b7f6b] uppercase tracking-wider font-semibold">Mes de Pago a Abonar</p>
+              <p className="text-xs text-[#6b7f6b] uppercase tracking-wider font-semibold">
+                Mes de Pago a Abonar
+              </p>
               <p className="text-sm font-bold text-[#1a2e1a] capitalize">
-                {selectedPayment.invoice?.billingMonth 
-                  ? selectedPayment.invoice.billingMonth 
-                  : 'No especificado (Abono directo)'}
+                {selectedPayment.invoice?.billingMonth
+                  ? selectedPayment.invoice.billingMonth
+                  : "No especificado (Abono directo)"}
               </p>
             </div>
           </div>
@@ -117,12 +133,18 @@ export function PaymentVisor({
                 <div className="mt-2 p-3 bg-gray-50 border border-gray-100 rounded-xl">
                   <p className="text-xs text-[#6b7f6b]">Código del Contrato</p>
                   <p className="text-sm font-bold text-[#1a2e1a] font-mono mt-0.5">
-                    {selectedPayment.invoice?.contract?.code || 'S/N'}
+                    {selectedPayment.invoice?.contract?.code || "S/N"}
                   </p>
-                  
-                  <p className="text-xs text-[#6b7f6b] mt-3">Nombre del Titular</p>
+
+                  <p className="text-xs text-[#6b7f6b] mt-3">
+                    Nombre del Titular
+                  </p>
                   <p className="text-sm font-semibold text-[#1a2e1a] mt-0.5">
-                    {selectedPayment.person?.name || 'Cliente Sirca'}
+                    {selectedPayment.person?.name || "Cliente Sirca"}
+                  </p>
+                  <p className="text-xs text-[#6b7f6b] mt-3">Monto a Pagar</p>
+                  <p className="text-sm font-semibold text-[#1a2e1a] mt-0.5">
+                    {`$${Number(selectedPayment.invoice?.totalAmount || 0).toFixed(2)}`}
                   </p>
                 </div>
               </div>
@@ -133,18 +155,33 @@ export function PaymentVisor({
                 </h4>
                 <div className="mt-2 p-3 bg-gray-50 border border-gray-100 rounded-xl space-y-3">
                   <div>
-                    <p className="text-[10px] text-[#6b7f6b] uppercase">Número de Referencia</p>
-                    <p className="text-sm font-bold text-[#1a2e1a] font-mono">{selectedPayment.referenceNumber}</p>
+                    <p className="text-[10px] text-[#6b7f6b] uppercase">
+                      Número de Referencia
+                    </p>
+                    <p className="text-sm font-bold text-[#1a2e1a] font-mono">
+                      {selectedPayment.referenceNumber}
+                    </p>
                   </div>
                   <div>
-                    <p className="text-[10px] text-[#6b7f6b] uppercase">Fecha de Operación</p>
-                    <p className="text-xs font-medium text-[#1a2e1a]">{formatDate(selectedPayment.paymentDate || selectedPayment.createdAt)}</p>
+                    <p className="text-[10px] text-[#6b7f6b] uppercase">
+                      Fecha de Operación
+                    </p>
+                    <p className="text-xs font-medium text-[#1a2e1a]">
+                      {formatDate(
+                        selectedPayment.paymentDate ||
+                          selectedPayment.createdAt,
+                      )}
+                    </p>
                   </div>
                   <div>
-                    <p className="text-[10px] text-[#6b7f6b] uppercase">Monto Reportado</p>
+                    <p className="text-[10px] text-[#6b7f6b] uppercase">
+                      Monto Reportado
+                    </p>
                     <div className="flex items-baseline gap-2 mt-0.5">
                       <span className="text-base font-extrabold text-[#1a2e1a]">
-                        {selectedPayment.amountBs ? `Bs. ${Number(selectedPayment.amountBs).toLocaleString('es-VE', { minimumFractionDigits: 2 })}` : `$${Number(selectedPayment.amount).toFixed(2)}`}
+                        {selectedPayment.amountBs
+                          ? `Bs. ${Number(selectedPayment.amountBs).toLocaleString("es-VE", { minimumFractionDigits: 2 })}`
+                          : `$${Number(selectedPayment.amount).toFixed(2)}`}
                       </span>
                       {selectedPayment.amountBs && (
                         <span className="text-xs text-[#6b7f6b] font-medium">
@@ -162,16 +199,16 @@ export function PaymentVisor({
               <h4 className="text-xs font-bold text-[#6b7f6b] uppercase tracking-wider flex items-center gap-1.5 mb-2">
                 <Eye className="h-3.5 w-3.5" /> Comprobante Digital
               </h4>
-              
+
               {selectedPayment.url ? (
-                <div className="relative group border border-gray-200 rounded-xl overflow-hidden bg-gray-50 flex items-center justify-center min-h-[220px] max-h-[260px] shadow-sm">
+                <div className="relative group border border-gray-200 rounded-xl overflow-hidden bg-gray-50 flex items-center justify-center min-h-55 max-h-65 shadow-sm">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     src={selectedPayment.url}
                     alt="Soporte de pago"
-                    className="object-contain max-h-[220px] w-full"
+                    className="object-contain max-h-55 w-full"
                   />
-                  
+
                   {/* Zoom overlay trigger */}
                   <div className="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex items-center justify-center gap-2">
                     <button
@@ -183,36 +220,44 @@ export function PaymentVisor({
                   </div>
                 </div>
               ) : (
-                <div className="border-2 border-dashed border-gray-200 rounded-xl flex flex-col items-center justify-center p-8 text-center text-gray-400 bg-gray-50/50 min-h-[220px]">
+                <div className="border-2 border-dashed border-gray-200 rounded-xl flex flex-col items-center justify-center p-8 text-center text-gray-400 bg-gray-50/50 min-h-55">
                   <AlertTriangle className="h-8 w-8 text-amber-400 mb-2" />
                   <p className="text-xs font-semibold">Sin imagen adjunta</p>
-                  <p className="text-[10px] text-gray-400 mt-1 max-w-[160px]">El reporte se registró sin comprobante físico.</p>
+                  <p className="text-[10px] text-gray-400 mt-1 max-w-40">
+                    El reporte se registró sin comprobante físico.
+                  </p>
                 </div>
               )}
             </div>
           </div>
 
           {/* Status-specific warning banners */}
-          {selectedPayment.status === 'COMPLETED' && (
+          {selectedPayment.status === "COMPLETED" && (
             <div className="bg-emerald-50 border border-emerald-200 rounded-xl p-4 flex gap-3 text-emerald-800 text-sm">
               <CheckCircle2 className="h-5 w-5 text-emerald-500 shrink-0 mt-0.5" />
               <div>
                 <p className="font-bold">Pago Verificado Satisfactoriamente</p>
-                <p className="text-xs text-emerald-700 mt-0.5">Este abono fue aprobado e imputado a la cuenta del afiliado. El saldo del contrato está al día.</p>
+                <p className="text-xs text-emerald-700 mt-0.5">
+                  Este abono fue aprobado y transferido a la cuenta del
+                  afiliado. El saldo del contrato está al día.
+                </p>
               </div>
             </div>
           )}
 
-          {selectedPayment.status === 'REJECTED' && (
+          {selectedPayment.status === "REJECTED" && (
             <div className="bg-gray-50 border border-gray-200 rounded-xl p-4 flex gap-3 text-gray-800 text-sm">
               <AlertCircle className="h-5 w-5 text-red-500 shrink-0 mt-0.5" />
               <div>
                 <p className="font-bold">Pago Rechazado</p>
                 <p className="text-xs text-gray-600 mt-0.5">
-                  Este reporte fue descartado. 
+                  Este reporte fue descartado.
                 </p>
                 <div className="mt-2 p-2 bg-red-50 rounded-lg text-xs font-mono text-red-900 border border-red-100">
-                  <strong>Motivo: </strong> "{selectedPayment.metadata?.rejectionReason || 'No especificado por el administrador'}"
+                  <strong>Motivo: </strong>&quot;
+                  {selectedPayment.metadata?.rejectionReason ||
+                    "No especificado por el administrador"}
+                  &quot;
                 </div>
               </div>
             </div>
@@ -227,14 +272,14 @@ export function PaymentVisor({
         </div>
 
         {/* Visor Footer Action Bar */}
-        {selectedPayment.status === 'PROCESSING' && (
+        {selectedPayment.status === "PROCESSING" && (
           <div className="p-4 border-t border-[#e2ebe2] bg-[#fcfdfc] flex flex-col gap-3">
             {!isRejecting ? (
               <div className="flex justify-end gap-3">
                 <button
                   onClick={() => {
                     setIsRejecting(true);
-                    setRejectionReason('');
+                    setRejectionReason("");
                     setActionError(null);
                   }}
                   disabled={actionLoading}
@@ -257,7 +302,9 @@ export function PaymentVisor({
               </div>
             ) : (
               <div className="flex flex-col gap-2 bg-red-50/50 p-3 rounded-xl border border-red-100 animate-fadeIn">
-                <p className="text-xs font-bold text-red-700">Especifica el motivo del rechazo:</p>
+                <p className="text-xs font-bold text-red-700">
+                  Especifica el motivo del rechazo:
+                </p>
                 <div className="flex gap-2 items-center">
                   <input
                     type="text"
@@ -277,7 +324,9 @@ export function PaymentVisor({
                     disabled={actionLoading}
                     className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-xl text-xs font-bold flex items-center gap-1 cursor-pointer"
                   >
-                    {actionLoading && <Loader2 className="h-3 w-3 animate-spin mr-1" />}
+                    {actionLoading && (
+                      <Loader2 className="h-3 w-3 animate-spin mr-1" />
+                    )}
                     Confirmar Rechazo
                   </button>
                 </div>

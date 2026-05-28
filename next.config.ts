@@ -65,6 +65,11 @@ const nextConfig: NextConfig = {
         source: '/billing/:path*',
         destination: `${API_BASE_URL}/billing/:path*`,
       },
+      {
+        // /reports/** → backend:3000/reports/**
+        source: '/reports/:path*',
+        destination: `${API_BASE_URL}/reports/:path*`,
+      },
     ];
   },
 };

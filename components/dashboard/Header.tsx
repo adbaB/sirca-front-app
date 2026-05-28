@@ -21,6 +21,10 @@ const PAGE_TITLES: Record<string, { title: string; subtitle: string }> = {
     title: 'Gestión de Roles',
     subtitle: 'Administra roles y permisos del sistema',
   },
+  '/dashboard/reportes': {
+    title: 'Reportes',
+    subtitle: 'Centro de reportes y exportación de datos',
+  },
 };
 
 export function Header({ onMenuClick }: HeaderProps) {

@@ -12,10 +12,10 @@ export default function LoginPage() {
       style={{ background: 'linear-gradient(135deg, #f0fdf4 0%, #fff7ed 50%, #f0fdf4 100%)' }}
     >
       {/* Decorative circles */}
-      <div className="absolute top-[-10%] left-[-5%] h-[500px] w-[500px] rounded-full opacity-30"
+      <div className="absolute top-[-10%] left-[-5%] h-[500px] w-[500px] rounded-full opacity-30 pointer-events-none"
         style={{ background: 'radial-gradient(circle, #16a34a22, transparent 70%)' }}
       />
-      <div className="absolute bottom-[-10%] right-[-5%] h-[400px] w-[400px] rounded-full opacity-30"
+      <div className="absolute bottom-[-10%] right-[-5%] h-[400px] w-[400px] rounded-full opacity-30 pointer-events-none"
         style={{ background: 'radial-gradient(circle, #f9731622, transparent 70%)' }}
       />
 

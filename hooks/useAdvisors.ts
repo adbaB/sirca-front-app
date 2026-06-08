@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { api } from '@/lib/api';
 import type { Advisor } from '@/lib/types';
 
 export function useAdvisors() {
@@ -14,9 +15,7 @@ export function useAdvisors() {
     async function fetchAdvisors() {
       try {
         setLoading(true);
-        const res = await fetch('/advisors');
-        if (!res.ok) throw new Error('Error cargando asesores');
-        const data = await res.json();
+        const data = await api.get<Advisor[]>('/advisors');
         if (!cancelled) {
           setAdvisors(data);
           setError(null);
@@ -31,7 +30,9 @@ export function useAdvisors() {
     }
 
     fetchAdvisors();
-    return () => { cancelled = true; };
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   return { advisors, loading, error };

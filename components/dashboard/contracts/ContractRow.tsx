@@ -16,17 +16,23 @@ interface ContractRowProps {
 export function ContractRow({ contract, isLast }: ContractRowProps) {
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'ACTIVE': return '#16a34a';
-      case 'INACTIVE': return '#dc2626';
-      default: return '#6b7f6b';
+      case 'ACTIVE':
+        return '#16a34a';
+      case 'INACTIVE':
+        return '#dc2626';
+      default:
+        return '#6b7f6b';
     }
   };
 
   const getStatusText = (status: string) => {
     switch (status) {
-      case 'ACTIVE': return 'Activo';
-      case 'INACTIVE': return 'Inactivo';
-      default: return status;
+      case 'ACTIVE':
+        return 'Activo';
+      case 'INACTIVE':
+        return 'Inactivo';
+      default:
+        return status;
     }
   };
 
@@ -39,9 +45,10 @@ export function ContractRow({ contract, isLast }: ContractRowProps) {
         <div
           className="h-10 w-10 rounded-xl flex items-center justify-center shrink-0 transition-transform duration-200 group-hover:scale-105"
           style={{
-            background: contract.status === 'ACTIVE'
-              ? 'linear-gradient(135deg, #16a34a 0%, #22c55e 100%)'
-              : 'linear-gradient(135deg, #9ca3af 0%, #d1d5db 100%)',
+            background:
+              contract.status === 'ACTIVE'
+                ? 'linear-gradient(135deg, #16a34a 0%, #22c55e 100%)'
+                : 'linear-gradient(135deg, #9ca3af 0%, #d1d5db 100%)',
           }}
         >
           <FileText className="h-5 w-5 text-white" />
@@ -51,22 +58,23 @@ export function ContractRow({ contract, isLast }: ContractRowProps) {
             {contract.code}
           </p>
           <p className="text-xs truncate" style={{ color: '#6b7f6b' }}>
-            {format(new Date(contract.affiliationDate), "d MMM, yyyy", { locale: es })}
+            {format(new Date(contract.affiliationDate), 'd MMM, yyyy', { locale: es })}
           </p>
         </div>
       </div>
       <div className="col-span-4 hidden md:block">
         <p className="text-sm font-medium truncate" style={{ color: '#1a2e1a' }}>
-          {contract.contractPersons && contract.contractPersons.find(p => p.isBillingOwner)?.person.name}
+          {contract.contractPersons &&
+            contract.contractPersons.find((p) => p.isBillingOwner)?.person.name}
         </p>
         <p className="text-xs truncate" style={{ color: '#6b7f6b' }}>
-          CI: {contract.contractPersons && `${contract.contractPersons.find(p => p.isBillingOwner)?.person.typeIdentityCard} - ${contract.contractPersons.find(p => p.isBillingOwner)?.person.identityCard}`}
+          CI:{' '}
+          {contract.contractPersons &&
+            `${contract.contractPersons.find((p) => p.isBillingOwner)?.person.typeIdentityCard} - ${contract.contractPersons.find((p) => p.isBillingOwner)?.person.identityCard}`}
         </p>
       </div>
       <div className="col-span-2 hidden md:block">
-        <Badge color={getStatusColor(contract.status)}>
-          {getStatusText(contract.status)}
-        </Badge>
+        <Badge color={getStatusColor(contract.status)}>{getStatusText(contract.status)}</Badge>
       </div>
       <div className="col-span-2 hidden md:block">
         <p className="text-sm font-medium truncate" style={{ color: '#1a2e1a' }}>

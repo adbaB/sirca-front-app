@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { api } from '@/lib/api';
 import { buildMonthBilling } from '@/lib/constants';
 import type { StatisticsResponse, DashboardFilters } from '@/lib/types';
 
@@ -21,9 +22,7 @@ export function useStatistics(filters: DashboardFilters) {
         const params = new URLSearchParams({ month_billing: monthBilling });
         if (advisorUuid !== 'all') params.set('advisor_uuid', advisorUuid);
 
-        const res = await fetch(`/statistics?${params.toString()}`);
-        if (!res.ok) throw new Error('Error cargando estadísticas');
-        const json = await res.json();
+        const json = await api.get<StatisticsResponse>(`/statistics?${params.toString()}`);
         if (!cancelled) {
           setData(json);
           setError(null);
@@ -38,7 +37,9 @@ export function useStatistics(filters: DashboardFilters) {
     }
 
     fetchStats();
-    return () => { cancelled = true; };
+    return () => {
+      cancelled = true;
+    };
   }, [year, month, advisorUuid]);
 
   return { data, loading, error };

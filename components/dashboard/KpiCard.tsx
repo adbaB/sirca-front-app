@@ -1,5 +1,5 @@
-import React from 'react';
 import { Card } from '@/components/ui/Card';
+import React from 'react';
 
 interface KpiCardProps {
   title: string;
@@ -20,7 +20,7 @@ export function KpiCard({ title, value, icon, color, subtitle }: KpiCardProps) {
 
       {/* Left border */}
       <div
-        className="absolute left-0 top-4 bottom-4 w-[3px] rounded-r-full"
+        className="absolute left-0 top-4 bottom-4 w-0.75 rounded-r-full"
         style={{ backgroundColor: color }}
       />
 
@@ -35,12 +35,14 @@ export function KpiCard({ title, value, icon, color, subtitle }: KpiCardProps) {
 
         {/* Content */}
         <div className="flex-1 min-w-0">
-          <p className="text-xs font-semibold uppercase tracking-wider truncate"
+          <p
+            className="text-xs font-semibold uppercase tracking-wider truncate"
             style={{ color: '#6b7f6b' }}
           >
             {title}
           </p>
-          <p className="text-2xl font-bold mt-0.5 font-[family-name:var(--font-geist-mono)] tracking-tight"
+          <p
+            className="text-2xl font-bold mt-0.5 font-[family-name:var(--font-geist-mono)] tracking-tight"
             style={{ color: '#1a2e1a' }}
           >
             {value}

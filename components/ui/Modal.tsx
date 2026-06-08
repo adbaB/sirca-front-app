@@ -20,7 +20,9 @@ export function Modal({ isOpen, onClose, title, children, maxWidth = '480px' }: 
     } else {
       document.body.style.overflow = '';
     }
-    return () => { document.body.style.overflow = ''; };
+    return () => {
+      document.body.style.overflow = '';
+    };
   }, [isOpen]);
 
   useEffect(() => {
@@ -37,7 +39,9 @@ export function Modal({ isOpen, onClose, title, children, maxWidth = '480px' }: 
     <div
       ref={overlayRef}
       className="fixed inset-0 z-50 flex items-center justify-center p-4"
-      onClick={(e) => { if (e.target === overlayRef.current) onClose(); }}
+      onClick={(e) => {
+        if (e.target === overlayRef.current) onClose();
+      }}
     >
       {/* Backdrop */}
       <div className="absolute inset-0 bg-black/40 backdrop-blur-sm animate-[fadeIn_0.2s_ease-out]" />
@@ -66,9 +70,7 @@ export function Modal({ isOpen, onClose, title, children, maxWidth = '480px' }: 
         </div>
 
         {/* Body */}
-        <div className="px-6 py-5">
-          {children}
-        </div>
+        <div className="px-6 py-5">{children}</div>
       </div>
     </div>
   );

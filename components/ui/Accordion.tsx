@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import React, { useState } from 'react';
 import { ChevronDown } from 'lucide-react';
@@ -31,18 +31,16 @@ export function Accordion({ children, className = '', allowMultiple = false }: A
       {React.Children.map(children, (child, idx) => {
         if (!React.isValidElement(child)) return null;
 
-        const element = child as React.ReactElement<any>;
+        const element = child as React.ReactElement<AccordionItemProps>;
         const itemId = element.props.id || String(idx);
         const isChildControlled = element.props.isOpen !== undefined;
-        
-        const isOpen = isChildControlled 
-          ? element.props.isOpen 
-          : !!openIds[itemId];
+
+        const isOpen = isChildControlled ? element.props.isOpen : !!openIds[itemId];
 
         const onToggle = isChildControlled
           ? element.props.onToggle
           : () => {
-              setOpenIds(prev => {
+              setOpenIds((prev) => {
                 if (allowMultiple) {
                   return { ...prev, [itemId]: !prev[itemId] };
                 } else {
@@ -55,13 +53,18 @@ export function Accordion({ children, className = '', allowMultiple = false }: A
               });
             };
 
-        return React.cloneElement(child as React.ReactElement<any>, {
+        return React.cloneElement(child as React.ReactElement<AccordionItemProps>, {
           isOpen,
-          onToggle
+          onToggle,
         });
       })}
     </div>
   );
+}
+
+interface IconElementProps {
+  className?: string;
+  style?: React.CSSProperties;
 }
 
 export function AccordionItem({
@@ -73,7 +76,7 @@ export function AccordionItem({
   headerClassName = '',
   bodyClassName = '',
   icon,
-  rightElement
+  rightElement,
 }: AccordionItemProps) {
   return (
     <div className={`transition-all duration-200 ${className}`}>
@@ -88,9 +91,12 @@ export function AccordionItem({
               className="h-10 w-10 rounded-xl flex items-center justify-center shrink-0 transition-transform duration-200"
               style={{ backgroundColor: isOpen ? '#dcfce7' : '#f1f5f1' }}
             >
-              {React.cloneElement(icon as React.ReactElement<any>, {
-                className: `h-5 w-5 ${(icon as React.ReactElement<any>).props.className || ''}`,
-                style: { color: isOpen ? '#16a34a' : '#6b7f6b', ...(icon as React.ReactElement<any>).props.style }
+              {React.cloneElement(icon as React.ReactElement<IconElementProps>, {
+                className: `h-5 w-5 ${(icon as React.ReactElement<IconElementProps>).props.className || ''}`,
+                style: {
+                  color: isOpen ? '#16a34a' : '#6b7f6b',
+                  ...(icon as React.ReactElement<IconElementProps>).props.style,
+                },
               })}
             </div>
           )}

@@ -10,13 +10,15 @@ import { PaymentZoomModal } from './PaymentZoomModal';
 export function PaymentsManager() {
   const [page, setPage] = useState(1);
   const [limit] = useState(10);
-  const [statusFilter, setStatusFilter] = useState<'PROCESSING' | 'COMPLETED' | 'REJECTED' | ''>('PROCESSING');
+  const [statusFilter, setStatusFilter] = useState<'PROCESSING' | 'COMPLETED' | 'REJECTED' | ''>(
+    'PROCESSING',
+  );
   const [searchText, setSearchText] = useState('');
   const [debouncedSearch, setDebouncedSearch] = useState('');
-  
+
   const [monthFilter, setMonthFilter] = useState('');
   const [yearFilter, setYearFilter] = useState('');
-  
+
   // Action state
   const [actionLoading, setActionLoading] = useState(false);
   const [actionError, setActionError] = useState<string | null>(null);
@@ -112,7 +114,9 @@ export function PaymentsManager() {
               </span>
             )}
           </h1>
-          <p className="text-sm text-[#6b7f6b] mt-1">Verifica, aprueba o rechaza los reportes de pago de los afiliados.</p>
+          <p className="text-sm text-[#6b7f6b] mt-1">
+            Verifica, aprueba o rechaza los reportes de pago de los afiliados.
+          </p>
         </div>
       </div>
 

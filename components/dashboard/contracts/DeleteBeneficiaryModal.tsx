@@ -36,10 +36,8 @@ export function DeleteBeneficiaryModal({
           </p>
           <p className="text-sm px-2" style={{ color: '#6b7f6b' }}>
             Esta acción desvinculará y eliminará permanentemente al beneficiario{' '}
-            <span className="font-semibold text-red-600">
-              {beneficiaryName}
-            </span>
-            . Esto recalculará el monto mensual del contrato de forma automática.
+            <span className="font-semibold text-red-600">{beneficiaryName}</span>. Esto recalculará
+            el monto mensual del contrato de forma automática.
           </p>
         </div>
 

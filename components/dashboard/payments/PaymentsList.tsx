@@ -27,9 +27,11 @@ export function PaymentsList({
   return (
     <div className="lg:col-span-5 flex flex-col bg-white rounded-2xl border border-[#e2ebe2] overflow-hidden shadow-sm">
       <div className="p-4 border-b border-[#e2ebe2] bg-[#fcfdfc]">
-        <h2 className="text-xs font-bold uppercase tracking-wider text-[#6b7f6b]">Lista de Reportes</h2>
+        <h2 className="text-xs font-bold uppercase tracking-wider text-[#6b7f6b]">
+          Lista de Reportes
+        </h2>
       </div>
-      
+
       <div className="overflow-y-auto max-h-[600px] flex-1 divide-y divide-[#f1f5f1]">
         {loading && payments.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-16 text-center text-[#6b7f6b]">
@@ -45,13 +47,15 @@ export function PaymentsList({
           <div className="flex flex-col items-center justify-center py-16 px-4 text-center text-[#6b7f6b]">
             <CreditCard className="h-10 w-10 mb-2 opacity-40 text-[#6b7f6b]" />
             <p className="text-sm font-medium">No se encontraron pagos</p>
-            <p className="text-xs text-[#9ca3af] mt-1">Intenta ajustando los filtros de búsqueda.</p>
+            <p className="text-xs text-[#9ca3af] mt-1">
+              Intenta ajustando los filtros de búsqueda.
+            </p>
           </div>
         ) : (
           payments.map((payment) => {
             const isSelected = selectedPayment?.id === payment.id;
             const method = getMethodStyle(payment.paymentMethod);
-            
+
             return (
               <button
                 key={payment.id}
@@ -64,19 +68,23 @@ export function PaymentsList({
               >
                 <div className="flex items-center gap-3">
                   {/* Method Icon / Label indicator */}
-                  <div className={`h-10 w-10 rounded-xl flex items-center justify-center ${method.bg}`}>
+                  <div
+                    className={`h-10 w-10 rounded-xl flex items-center justify-center ${method.bg}`}
+                  >
                     <span className={`text-[10px] font-bold ${method.text}`}>
                       {method.label.substring(0, 3).toUpperCase()}
                     </span>
                   </div>
-                  
+
                   {/* Name & Cédula */}
                   <div>
                     <p className="text-sm font-semibold text-[#1a2e1a] line-clamp-1">
                       {payment.person?.name || 'Cliente Sirca'}
                     </p>
                     <p className="text-xs text-[#6b7f6b] mt-0.5 flex items-center gap-1.5">
-                      {payment.person ? `${payment.person.typeIdentityCard}-${payment.person.identityCard}` : 'Sin Cédula'}
+                      {payment.person
+                        ? `${payment.person.typeIdentityCard}-${payment.person.identityCard}`
+                        : 'Sin Cédula'}
                       <span className="text-gray-300">•</span>
                       <span className="font-mono text-[10px] bg-gray-100 px-1.5 py-0.5 rounded text-gray-600">
                         Ref: {payment.referenceNumber}
@@ -88,13 +96,17 @@ export function PaymentsList({
                 <div className="flex items-center gap-2.5">
                   <div className="text-right">
                     <p className="text-sm font-bold text-[#1a2e1a]">
-                      {payment.amountBs ? `Bs. ${Number(payment.amountBs).toLocaleString('es-VE', { minimumFractionDigits: 2 })}` : `$${Number(payment.amount).toFixed(2)}`}
+                      {payment.amountBs
+                        ? `Bs. ${Number(payment.amountBs).toLocaleString('es-VE', { minimumFractionDigits: 2 })}`
+                        : `$${Number(payment.amount).toFixed(2)}`}
                     </p>
                     <p className="text-[10px] text-[#9ca3af] mt-0.5">
                       {payment.amountBs ? `$${Number(payment.amount).toFixed(2)}` : 'Divisa'}
                     </p>
                   </div>
-                  <ChevronRight className={`h-4 w-4 text-gray-300 transition-transform ${isSelected ? 'translate-x-0.5 text-[#16a34a]' : ''}`} />
+                  <ChevronRight
+                    className={`h-4 w-4 text-gray-300 transition-transform ${isSelected ? 'translate-x-0.5 text-[#16a34a]' : ''}`}
+                  />
                 </div>
               </button>
             );

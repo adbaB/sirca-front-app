@@ -27,7 +27,14 @@ interface SwitchProps {
  *   description={isActive ? 'Activo' : 'Deshabilitado'}
  * />
  */
-export function Switch({ checked, onChange, label, description, id, disabled = false }: SwitchProps) {
+export function Switch({
+  checked,
+  onChange,
+  label,
+  description,
+  id,
+  disabled = false,
+}: SwitchProps) {
   const switchId = id ?? 'switch';
 
   return (
@@ -35,7 +42,11 @@ export function Switch({ checked, onChange, label, description, id, disabled = f
       {(label || description) && (
         <div className="flex flex-col gap-0.5 pr-4">
           {label && (
-            <p id={`${switchId}-label`} className="text-sm font-semibold" style={{ color: '#374151' }}>
+            <p
+              id={`${switchId}-label`}
+              className="text-sm font-semibold"
+              style={{ color: '#374151' }}
+            >
               {label}
             </p>
           )}

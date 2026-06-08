@@ -18,14 +18,17 @@ interface SelectProps {
 export function Select({ id, label, options, value, onChange, icon }: SelectProps) {
   return (
     <div className="flex flex-col gap-1.5">
-      <label htmlFor={id} className="text-xs font-semibold uppercase tracking-wider"
+      <label
+        htmlFor={id}
+        className="text-xs font-semibold uppercase tracking-wider"
         style={{ color: '#6b7f6b' }}
       >
         {label}
       </label>
       <div className="relative">
         {icon && (
-          <div className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2"
+          <div
+            className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2"
             style={{ color: '#9ca3af' }}
           >
             {icon}
@@ -46,8 +49,14 @@ export function Select({ id, label, options, value, onChange, icon }: SelectProp
             borderColor: '#e2ebe2',
             color: '#1a2e1a',
           }}
-          onFocus={(e) => { e.currentTarget.style.borderColor = '#16a34a'; e.currentTarget.style.boxShadow = '0 0 0 3px rgba(22,163,74,0.1)'; }}
-          onBlur={(e) => { e.currentTarget.style.borderColor = '#e2ebe2'; e.currentTarget.style.boxShadow = 'none'; }}
+          onFocus={(e) => {
+            e.currentTarget.style.borderColor = '#16a34a';
+            e.currentTarget.style.boxShadow = '0 0 0 3px rgba(22,163,74,0.1)';
+          }}
+          onBlur={(e) => {
+            e.currentTarget.style.borderColor = '#e2ebe2';
+            e.currentTarget.style.boxShadow = 'none';
+          }}
         >
           {options.map((opt) => (
             <option key={opt.value} value={opt.value}>
@@ -55,7 +64,8 @@ export function Select({ id, label, options, value, onChange, icon }: SelectProp
             </option>
           ))}
         </select>
-        <ChevronDown className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4"
+        <ChevronDown
+          className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4"
           style={{ color: '#9ca3af' }}
         />
       </div>

@@ -1,13 +1,6 @@
 'use client';
 
-import {
-  PieChart,
-  Pie,
-  Cell,
-  Tooltip,
-  ResponsiveContainer,
-  Legend,
-} from 'recharts';
+import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer, Legend } from 'recharts';
 import { Card } from '@/components/ui/Card';
 import { STATUS_COLORS, STATUS_LABELS, formatUsd } from '@/lib/constants';
 import type { PaymentBreakdown } from '@/lib/types';
@@ -32,10 +25,13 @@ function CustomTooltip({ active, payload }: { active?: boolean; payload?: Toolti
   if (!active || !payload?.length) return null;
   const data = payload[0];
   return (
-    <div className="rounded-xl border bg-white px-4 py-3 shadow-lg"
+    <div
+      className="rounded-xl border bg-white px-4 py-3 shadow-lg"
       style={{ borderColor: '#e2ebe2' }}
     >
-      <p className="text-sm font-semibold" style={{ color: '#1a2e1a' }}>{data.name}</p>
+      <p className="text-sm font-semibold" style={{ color: '#1a2e1a' }}>
+        {data.name}
+      </p>
       <p className="text-xs mt-1" style={{ color: '#6b7f6b' }}>
         {data.payload.count} pagos · {formatUsd(data.payload.amountUsd)}
       </p>
@@ -50,7 +46,9 @@ function CustomLegend({ payload }: { payload?: Array<{ value: string; color: str
       {payload.map((entry) => (
         <div key={entry.value} className="flex items-center gap-1.5">
           <span className="h-2.5 w-2.5 rounded-full" style={{ backgroundColor: entry.color }} />
-          <span className="text-xs" style={{ color: '#6b7f6b' }}>{entry.value}</span>
+          <span className="text-xs" style={{ color: '#6b7f6b' }}>
+            {entry.value}
+          </span>
         </div>
       ))}
     </div>

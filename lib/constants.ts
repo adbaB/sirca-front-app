@@ -20,8 +20,18 @@ export const MONTHS = [
 
 /** Short month labels for charts */
 export const MONTH_SHORT_LABELS = [
-  'Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun',
-  'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic',
+  'Ene',
+  'Feb',
+  'Mar',
+  'Abr',
+  'May',
+  'Jun',
+  'Jul',
+  'Ago',
+  'Sep',
+  'Oct',
+  'Nov',
+  'Dic',
 ];
 
 /** Available years for filtering */
@@ -29,10 +39,10 @@ export const YEARS = [2024, 2025, 2026];
 
 /** Payment status colors — optimized for light mode */
 export const STATUS_COLORS = {
-  verified: '#16a34a',    // SIRCA green
-  unverified: '#f97316',  // SIRCA orange
-  partial: '#d97706',     // amber-600
-  pending: '#dc2626',     // red-600
+  verified: '#16a34a', // SIRCA green
+  unverified: '#f97316', // SIRCA orange
+  partial: '#d97706', // amber-600
+  pending: '#dc2626', // red-600
 } as const;
 
 /** Payment status labels in Spanish */
@@ -43,22 +53,8 @@ export const STATUS_LABELS: Record<string, string> = {
   pending: 'Pendientes',
 };
 
-/** Format a number as USD currency */
-export function formatUsd(amount: number): string {
-  return new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency: 'USD',
-    minimumFractionDigits: 2,
-  }).format(amount);
-}
-
-/** Format a number as VES / Bs currency */
-export function formatBs(amount: number): string {
-  return `Bs ${new Intl.NumberFormat('es-VE', {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-  }).format(amount)}`;
-}
+/** Format a number as USD currency — re-exported from @/lib/formatters */
+export { formatCurrency as formatUsd, formatCurrencyBs as formatBs } from '@/lib/formatters';
 
 /** Build the month_billing query param (YYYY-MM) from year and month */
 export function buildMonthBilling(year: number, month: number): string {

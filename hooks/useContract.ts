@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
+import { api } from '@/lib/api';
 import type { Contract } from '@/lib/types';
 
 export function useContract(id: string) {
@@ -11,9 +12,7 @@ export function useContract(id: string) {
   const fetchContract = useCallback(async () => {
     try {
       setLoading(true);
-      const res = await fetch(`/contracts/${id}`);
-      if (!res.ok) throw new Error('Error cargando detalles del contrato');
-      const data = await res.json();
+      const data = await api.get<Contract>(`/contracts/${id}`);
       setContract(data);
       setError(null);
     } catch (err) {
@@ -29,9 +28,7 @@ export function useContract(id: string) {
     async function load() {
       try {
         setLoading(true);
-        const res = await fetch(`/contracts/${id}`);
-        if (!res.ok) throw new Error('Error cargando detalles del contrato');
-        const data = await res.json() as Contract;
+        const data = await api.get<Contract>(`/contracts/${id}`);
         if (!cancelled) {
           setContract(data);
           setError(null);
@@ -48,22 +45,15 @@ export function useContract(id: string) {
     if (id) {
       load();
     }
-    
-    return () => { cancelled = true; };
+
+    return () => {
+      cancelled = true;
+    };
   }, [id]);
 
   const updateContract = async (payload: Partial<Contract>) => {
-    const res = await fetch(`/contracts/${id}`, {
-      method: 'PATCH',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload),
-    });
-    if (!res.ok) {
-      const data = await res.json().catch(() => ({}));
-      throw new Error(data.message || 'Error actualizando contrato');
-    }
+    await api.patch(`/contracts/${id}`, payload);
     await fetchContract();
-    return res.json();
   };
 
   const addBeneficiary = async (data: {
@@ -74,53 +64,22 @@ export function useContract(id: string) {
     role: string;
     isBillingOwner: boolean;
   }) => {
-    const res = await fetch(`/contracts/${id}/beneficiaries`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ ...data, contractId: id }),
-    });
-    if (!res.ok) {
-      const errData = await res.json().catch(() => ({}));
-      throw new Error(errData.message || 'Error al agregar beneficiario');
-    }
+    await api.post(`/contracts/${id}/beneficiaries`, { ...data, contractId: id });
     await fetchContract();
-    return res.json();
   };
 
   const setContractTitular = async (contractPersonId: string) => {
-    const res = await fetch(`/contracts/${id}/set-titular`, {
-      method: 'PATCH',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ contractPersonId }),
-    });
-    if (!res.ok) {
-      const errData = await res.json().catch(() => ({}));
-      throw new Error(errData.message || 'Error al cambiar el titular del contrato');
-    }
+    await api.patch(`/contracts/${id}/set-titular`, { contractPersonId });
     await fetchContract();
   };
 
   const setBillingOwner = async (contractPersonId: string) => {
-    const res = await fetch(`/contracts/${id}/set-billing-owner`, {
-      method: 'PATCH',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ contractPersonId }),
-    });
-    if (!res.ok) {
-      const errData = await res.json().catch(() => ({}));
-      throw new Error(errData.message || 'Error al cambiar el titular de la factura');
-    }
+    await api.patch(`/contracts/${id}/set-billing-owner`, { contractPersonId });
     await fetchContract();
   };
 
   const removeAffiliate = async (contractPersonId: string) => {
-    const res = await fetch(`/contracts/${id}/beneficiaries/${contractPersonId}`, {
-      method: 'DELETE',
-    });
-    if (!res.ok) {
-      const errData = await res.json().catch(() => ({}));
-      throw new Error(errData.message || 'Error al eliminar afiliado del contrato');
-    }
+    await api.delete(`/contracts/${id}/beneficiaries/${contractPersonId}`);
     await fetchContract();
   };
 
@@ -133,19 +92,10 @@ export function useContract(id: string) {
       planId?: string | null;
       role?: string;
       isBillingOwner?: boolean;
-    }
+    },
   ) => {
-    const res = await fetch(`/persons/${personId}`, {
-      method: 'PATCH',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ ...data, contractId: id }),
-    });
-    if (!res.ok) {
-      const errData = await res.json().catch(() => ({}));
-      throw new Error(errData.message || 'Error al actualizar afiliado');
-    }
+    await api.patch(`/persons/${personId}`, { ...data, contractId: id });
     await fetchContract();
-    return res.json();
   };
 
   return {

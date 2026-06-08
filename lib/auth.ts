@@ -15,13 +15,10 @@ function getSecret(): string {
 
 /** Import the secret as a CryptoKey for HMAC operations */
 async function getCryptoKey(): Promise<CryptoKey> {
-  return crypto.subtle.importKey(
-    'raw',
-    ENCODER.encode(getSecret()),
-    ALGORITHM,
-    false,
-    ['sign', 'verify'],
-  );
+  return crypto.subtle.importKey('raw', ENCODER.encode(getSecret()), ALGORITHM, false, [
+    'sign',
+    'verify',
+  ]);
 }
 
 /** Base64url encode a buffer */
@@ -76,9 +73,7 @@ export async function verifyToken(token: string): Promise<Record<string, unknown
     );
     if (!valid) return null;
 
-    const decoded = JSON.parse(
-      new TextDecoder().decode(base64urlDecode(payloadB64)),
-    );
+    const decoded = JSON.parse(new TextDecoder().decode(base64urlDecode(payloadB64)));
 
     // Check expiration
     if (typeof decoded.exp === 'number' && decoded.exp < Date.now()) return null;

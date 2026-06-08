@@ -4,8 +4,10 @@ import React, { useState, useEffect } from 'react';
 import { Check, Search } from 'lucide-react';
 import { Modal } from '@/components/ui/Modal';
 import { Button } from '@/components/ui/Button';
+import { ErrorBanner } from '@/components/ui/ErrorBanner';
 import { Spinner } from '@/components/ui/Spinner';
 import { Badge } from '@/components/ui/Badge';
+import { api } from '@/lib/api';
 import type { Role, Permission } from '@/lib/types';
 
 interface RolePermissionsModalProps {
@@ -37,9 +39,7 @@ function PermissionsInner({
     async function load() {
       try {
         setFetchingPerms(true);
-        const res = await fetch('/permissions?limit=1000');
-        if (!res.ok) throw new Error('Error cargando permisos');
-        const data = await res.json() as {data: Permission[]};
+        const data = await api.get<{ data: Permission[] }>('/permissions?limit=1000');
         if (!cancelled) setAllPermissions(data.data);
       } catch {
         // silently fail — user will see empty list
@@ -48,7 +48,9 @@ function PermissionsInner({
       }
     }
     load();
-    return () => { cancelled = true; };
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   const toggle = (id: string) => {
@@ -60,9 +62,10 @@ function PermissionsInner({
     });
   };
   console.log(allPermissions);
-  const filtered = allPermissions.filter((p) =>
-    p.name.toLowerCase().includes(search.toLowerCase()) ||
-    (p.description ?? '').toLowerCase().includes(search.toLowerCase()),
+  const filtered = allPermissions.filter(
+    (p) =>
+      p.name.toLowerCase().includes(search.toLowerCase()) ||
+      (p.description ?? '').toLowerCase().includes(search.toLowerCase()),
   );
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -85,7 +88,10 @@ function PermissionsInner({
         className="flex items-center gap-3 rounded-xl px-4 py-3"
         style={{ backgroundColor: '#f0fdf4', border: '1px solid #bbf7d0' }}
       >
-        <div className="h-8 w-8 rounded-lg flex items-center justify-center shrink-0" style={{ backgroundColor: '#dcfce7' }}>
+        <div
+          className="h-8 w-8 rounded-lg flex items-center justify-center shrink-0"
+          style={{ backgroundColor: '#dcfce7' }}
+        >
           <Check className="h-4 w-4" style={{ color: '#16a34a' }} />
         </div>
         <div className="min-w-0">
@@ -93,14 +99,18 @@ function PermissionsInner({
             Rol: <span style={{ color: '#16a34a' }}>{role?.name}</span>
           </p>
           <p className="text-xs" style={{ color: '#6b7f6b' }}>
-            {selected.size} {selected.size === 1 ? 'permiso seleccionado' : 'permisos seleccionados'}
+            {selected.size}{' '}
+            {selected.size === 1 ? 'permiso seleccionado' : 'permisos seleccionados'}
           </p>
         </div>
       </div>
 
       {/* Search */}
       <div className="relative">
-        <div className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2" style={{ color: '#9ca3af' }}>
+        <div
+          className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2"
+          style={{ color: '#9ca3af' }}
+        >
           <Search className="h-4 w-4" />
         </div>
         <input
@@ -138,7 +148,11 @@ function PermissionsInner({
               {/* Group header */}
               <div
                 className="px-4 py-2 text-[10px] font-bold uppercase tracking-widest sticky top-0"
-                style={{ backgroundColor: '#f8faf8', color: '#9ca3af', borderBottom: '1px solid #f1f5f1' }}
+                style={{
+                  backgroundColor: '#f8faf8',
+                  color: '#9ca3af',
+                  borderBottom: '1px solid #f1f5f1',
+                }}
               >
                 {group}
               </div>
@@ -168,7 +182,10 @@ function PermissionsInner({
                       />
                     </span>
                     <div className="min-w-0">
-                      <p className="text-sm font-medium animate-fade-in" style={{ color: '#1a2e1a' }}>
+                      <p
+                        className="text-sm font-medium animate-fade-in"
+                        style={{ color: '#1a2e1a' }}
+                      >
                         {perm.description || perm.name}
                       </p>
                       {perm.description && (
@@ -178,7 +195,9 @@ function PermissionsInner({
                       )}
                     </div>
                     {isChecked && (
-                      <Badge color="#16a34a" className="ml-auto shrink-0">activo</Badge>
+                      <Badge color="#16a34a" className="ml-auto shrink-0">
+                        activo
+                      </Badge>
                     )}
                   </label>
                 );
@@ -189,17 +208,7 @@ function PermissionsInner({
       </div>
 
       {/* Error */}
-      {error && (
-        <div
-          className="flex items-center gap-2 rounded-xl px-4 py-3 text-sm animate-[shake_0.4s_ease-in-out]"
-          style={{ backgroundColor: '#fef2f2', border: '1px solid #fecaca', color: '#b91c1c' }}
-        >
-          <svg className="h-4 w-4 shrink-0" fill="currentColor" viewBox="0 0 20 20">
-            <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
-          </svg>
-          {error}
-        </div>
-      )}
+      <ErrorBanner message={error} />
 
       {/* Actions */}
       <div className="flex gap-3 justify-end pt-1">
@@ -225,12 +234,7 @@ export function RolePermissionsModal({
   const modalKey = isOpen && role ? role.id : 'closed';
 
   return (
-    <Modal
-      isOpen={isOpen}
-      onClose={onClose}
-      title="Asignar Permisos"
-      maxWidth="540px"
-    >
+    <Modal isOpen={isOpen} onClose={onClose} title="Asignar Permisos" maxWidth="540px">
       <PermissionsInner
         key={modalKey}
         onClose={onClose}

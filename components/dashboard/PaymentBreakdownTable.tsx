@@ -18,16 +18,28 @@ export function PaymentBreakdownTable({ breakdown }: PaymentBreakdownTableProps)
         <table className="w-full text-sm">
           <thead>
             <tr style={{ borderBottom: '2px solid #e2ebe2' }}>
-              <th className="text-left py-3 px-4 text-xs font-bold uppercase tracking-wider" style={{ color: '#6b7f6b' }}>
+              <th
+                className="text-left py-3 px-4 text-xs font-bold uppercase tracking-wider"
+                style={{ color: '#6b7f6b' }}
+              >
                 Estado
               </th>
-              <th className="text-center py-3 px-4 text-xs font-bold uppercase tracking-wider" style={{ color: '#6b7f6b' }}>
+              <th
+                className="text-center py-3 px-4 text-xs font-bold uppercase tracking-wider"
+                style={{ color: '#6b7f6b' }}
+              >
                 Cantidad
               </th>
-              <th className="text-right py-3 px-4 text-xs font-bold uppercase tracking-wider" style={{ color: '#6b7f6b' }}>
+              <th
+                className="text-right py-3 px-4 text-xs font-bold uppercase tracking-wider"
+                style={{ color: '#6b7f6b' }}
+              >
                 Monto USD
               </th>
-              <th className="text-right py-3 px-4 text-xs font-bold uppercase tracking-wider" style={{ color: '#6b7f6b' }}>
+              <th
+                className="text-right py-3 px-4 text-xs font-bold uppercase tracking-wider"
+                style={{ color: '#6b7f6b' }}
+              >
                 Monto Bs
               </th>
             </tr>
@@ -40,9 +52,7 @@ export function PaymentBreakdownTable({ breakdown }: PaymentBreakdownTableProps)
                 style={{ borderBottom: '1px solid #f1f5f1' }}
               >
                 <td className="py-3.5 px-4">
-                  <Badge color={STATUS_COLORS[row.status]}>
-                    {STATUS_LABELS[row.status]}
-                  </Badge>
+                  <Badge color={STATUS_COLORS[row.status]}>{STATUS_LABELS[row.status]}</Badge>
                 </td>
                 <td
                   className="py-3.5 px-4 text-center font-[family-name:var(--font-geist-mono)] font-medium"

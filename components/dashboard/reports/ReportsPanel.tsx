@@ -1,22 +1,21 @@
 'use client';
 
-import { useState, type ComponentType, type SVGProps } from 'react';
-import {
-  ClipboardList,
-  FileSpreadsheet,
-  FileText,
-  Calendar,
-  Download,
-  ShieldAlert,
-  Users,
-  Lock,
-  CheckCircle2
-} from 'lucide-react';
+import { Badge } from '@/components/ui/Badge';
 import { Can } from '@/components/ui/Can';
 import { Card } from '@/components/ui/Card';
 import { Select } from '@/components/ui/Select';
-import { Badge } from '@/components/ui/Badge';
 import { MONTHS, YEARS } from '@/lib/constants';
+import {
+  Calendar,
+  ClipboardList,
+  Download,
+  FileSpreadsheet,
+  FileText,
+  Lock,
+  ShieldAlert,
+  Users,
+} from 'lucide-react';
+import { useState, type ComponentType, type SVGProps } from 'react';
 
 const currentDate = new Date();
 
@@ -36,7 +35,8 @@ const REPORTS: ReportType[] = [
     id: 'contracts-detail',
     title: 'Detalle de Contratos',
     shortDesc: 'Contratos, pagos y facturación.',
-    longDesc: 'Consolida todos los contratos activos de un mes seleccionado. Muestra el titular principal, monto mensual a pagar, total facturado, montos pagados en USD ($) y bolívares (Bs), estado de la factura (PAGADA/PENDIENTE) y la fecha de conciliación.',
+    longDesc:
+      'Consolida todos los contratos activos de un mes seleccionado. Muestra el titular principal, monto mensual a pagar, total facturado, montos pagados en USD ($) y bolívares (Bs), estado de la factura (PAGADA/PENDIENTE) y la fecha de conciliación.',
     icon: FileText,
     active: true,
     badge: 'Disponible',
@@ -46,7 +46,8 @@ const REPORTS: ReportType[] = [
     id: 'advisors-relation',
     title: 'Relación de Asesores',
     shortDesc: 'Ventas y rendimiento por asesor.',
-    longDesc: 'Muestra el listado de asesores de ventas, volumen de contratos procesados por cada uno de ellos en el período seleccionado, comisiones asignadas y métricas globales de desempeño comercial.',
+    longDesc:
+      'Muestra el listado de asesores de ventas, volumen de contratos procesados por cada uno de ellos en el período seleccionado, comisiones asignadas y métricas globales de desempeño comercial.',
     icon: Users,
     active: false,
     badge: 'Próximamente',
@@ -56,7 +57,8 @@ const REPORTS: ReportType[] = [
     id: 'payments-relation',
     title: 'Relación de Pagos',
     shortDesc: 'Historial y métodos de cobro.',
-    longDesc: 'Listado detallado de todas las transacciones de pago validadas en el mes, desglosado por método de recaudación (Pago Móvil, Zelle, Transferencia Bancaria, Efectivo) para auditoría fiscal y contabilidad.',
+    longDesc:
+      'Listado detallado de todas las transacciones de pago validadas en el mes, desglosado por método de recaudación (Pago Móvil, Zelle, Transferencia Bancaria, Efectivo) para auditoría fiscal y contabilidad.',
     icon: FileSpreadsheet,
     active: false,
     badge: 'Próximamente',
@@ -70,10 +72,16 @@ export function ReportsPanel() {
   const [month, setMonth] = useState<number>(currentDate.getMonth() + 1);
   const [downloading, setDownloading] = useState<'excel' | 'pdf' | null>(null);
 
-  const selectedReport = REPORTS.find(r => r.id === selectedReportId) || REPORTS[0];
+  const selectedReport = REPORTS.find((r) => r.id === selectedReportId) || REPORTS[0];
 
-  const yearOptions = YEARS.map((y) => ({ value: String(y), label: String(y) }));
-  const monthOptions = MONTHS.map((m) => ({ value: String(m.value), label: m.label }));
+  const yearOptions = YEARS.map((y) => ({
+    value: String(y),
+    label: String(y),
+  }));
+  const monthOptions = MONTHS.map((m) => ({
+    value: String(m.value),
+    label: m.label,
+  }));
 
   const handleDownload = async (format: 'excel' | 'pdf') => {
     setDownloading(format);
@@ -116,7 +124,7 @@ export function ReportsPanel() {
   );
 
   return (
-    <Can role="admin" fallback={fallback}>
+    <Can permission="read:reports" fallback={fallback}>
       <div className="space-y-6">
         {/* ── Section Header ─────────────────────────────── */}
         <div className="flex items-center gap-3">
@@ -138,10 +146,12 @@ export function ReportsPanel() {
 
         {/* ── Main Two-Column Layout ─────────────────────── */}
         <div className="flex flex-col lg:flex-row gap-6 items-start">
-          
           {/* Left Column: Reports Sidebar */}
           <div className="w-full lg:w-80 shrink-0 space-y-3">
-            <p className="text-[10px] font-bold uppercase tracking-wider px-1" style={{ color: '#9ca3af' }}>
+            <p
+              className="text-[10px] font-bold uppercase tracking-wider px-1"
+              style={{ color: '#9ca3af' }}
+            >
               Seleccione un Reporte
             </p>
             <div className="flex flex-col gap-2">
@@ -199,7 +209,10 @@ export function ReportsPanel() {
 
                     {/* Badge absolute position top-right */}
                     <div className="absolute top-4 right-4">
-                      <Badge color={report.badgeColor} className="text-[9px] py-0.5 px-1.5 font-bold">
+                      <Badge
+                        color={report.badgeColor}
+                        className="text-[9px] py-0.5 px-1.5 font-bold"
+                      >
                         {report.badge}
                       </Badge>
                     </div>
@@ -212,7 +225,6 @@ export function ReportsPanel() {
           {/* Right Column: Report Details Panel */}
           <div className="flex-1 w-full animate-fade-in">
             <Card className="overflow-hidden shadow-sm min-h-[380px]">
-              
               {/* Header section with gradient */}
               <div
                 className="px-6 py-6"
@@ -224,7 +236,10 @@ export function ReportsPanel() {
                 <div className="flex items-start gap-4">
                   <div
                     className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl shadow-sm"
-                    style={{ backgroundColor: '#ffffff', border: '1px solid #e2ebe2' }}
+                    style={{
+                      backgroundColor: '#ffffff',
+                      border: '1px solid #e2ebe2',
+                    }}
                   >
                     {/* Render active icon dynamically */}
                     {(() => {
@@ -233,7 +248,10 @@ export function ReportsPanel() {
                     })()}
                   </div>
                   <div className="space-y-1">
-                    <h3 className="text-base font-bold flex items-center gap-2.5" style={{ color: '#1a2e1a' }}>
+                    <h3
+                      className="text-base font-bold flex items-center gap-2.5"
+                      style={{ color: '#1a2e1a' }}
+                    >
                       {selectedReport.title}
                       <Badge color={selectedReport.badgeColor} className="text-[10px]">
                         {selectedReport.badge}
@@ -252,7 +270,10 @@ export function ReportsPanel() {
                   /* Active report view: Detalle de Contratos */
                   <div className="space-y-6">
                     <div>
-                      <h4 className="text-xs font-bold uppercase tracking-wider mb-3.5" style={{ color: '#6b7f6b' }}>
+                      <h4
+                        className="text-xs font-bold uppercase tracking-wider mb-3.5"
+                        style={{ color: '#6b7f6b' }}
+                      >
                         Filtros de Período
                       </h4>
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -278,7 +299,10 @@ export function ReportsPanel() {
                     <div style={{ borderTop: '1px solid #e2ebe2' }} className="my-2" />
 
                     <div className="space-y-4">
-                      <h4 className="text-xs font-bold uppercase tracking-wider" style={{ color: '#6b7f6b' }}>
+                      <h4
+                        className="text-xs font-bold uppercase tracking-wider"
+                        style={{ color: '#6b7f6b' }}
+                      >
                         Opciones de Exportación
                       </h4>
                       <div className="flex flex-col sm:flex-row gap-3">
@@ -310,13 +334,26 @@ export function ReportsPanel() {
                         >
                           {downloading === 'excel' ? (
                             <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24" fill="none">
-                              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                              <circle
+                                className="opacity-25"
+                                cx="12"
+                                cy="12"
+                                r="10"
+                                stroke="currentColor"
+                                strokeWidth="4"
+                              />
+                              <path
+                                className="opacity-75"
+                                fill="currentColor"
+                                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+                              />
                             </svg>
                           ) : (
                             <FileSpreadsheet className="h-4 w-4" />
                           )}
-                          {downloading === 'excel' ? 'Generando Excel…' : 'Exportar a Excel (.xlsx)'}
+                          {downloading === 'excel'
+                            ? 'Generando Excel…'
+                            : 'Exportar a Excel (.xlsx)'}
                         </button>
 
                         <button
@@ -345,8 +382,19 @@ export function ReportsPanel() {
                         >
                           {downloading === 'pdf' ? (
                             <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24" fill="none">
-                              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                              <circle
+                                className="opacity-25"
+                                cx="12"
+                                cy="12"
+                                r="10"
+                                stroke="currentColor"
+                                strokeWidth="4"
+                              />
+                              <path
+                                className="opacity-75"
+                                fill="currentColor"
+                                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+                              />
                             </svg>
                           ) : (
                             <Download className="h-4 w-4" />
@@ -359,9 +407,16 @@ export function ReportsPanel() {
                     {/* Helpful Guideline */}
                     <div
                       className="rounded-xl p-4 text-xs leading-relaxed"
-                      style={{ backgroundColor: '#fcfdfc', border: '1px solid #e2ebe2', color: '#6b7f6b' }}
+                      style={{
+                        backgroundColor: '#fcfdfc',
+                        border: '1px solid #e2ebe2',
+                        color: '#6b7f6b',
+                      }}
                     >
-                      💡 <strong>Consejo de uso:</strong> La generación de reportes puede tardar unos segundos dependiendo del volumen de contratos facturados en el período seleccionado. Se recomienda descargar el archivo Excel si requiere aplicar filtros manuales complejos.
+                      💡 <strong>Consejo de uso:</strong> La generación de reportes puede tardar
+                      unos segundos dependiendo del volumen de contratos facturados en el período
+                      seleccionado. Se recomienda descargar el archivo Excel si requiere aplicar
+                      filtros manuales complejos.
                     </div>
                   </div>
                 ) : (
@@ -375,11 +430,15 @@ export function ReportsPanel() {
                     </div>
 
                     <div className="max-w-md space-y-2">
-                      <h4 className="text-base font-bold animate-fade-in" style={{ color: '#1a2e1a' }}>
+                      <h4
+                        className="text-base font-bold animate-fade-in"
+                        style={{ color: '#1a2e1a' }}
+                      >
                         Módulo en Desarrollo
                       </h4>
                       <p className="text-sm leading-relaxed" style={{ color: '#6b7f6b' }}>
-                        Este reporte estructurado y sus visualizaciones analíticas se encuentran en proceso de desarrollo técnico y estarán disponibles próximamente.
+                        Este reporte estructurado y sus visualizaciones analíticas se encuentran en
+                        proceso de desarrollo técnico y estarán disponibles próximamente.
                       </p>
                     </div>
                   </div>
@@ -387,10 +446,8 @@ export function ReportsPanel() {
               </div>
             </Card>
           </div>
-
         </div>
       </div>
     </Can>
   );
 }
-

@@ -43,24 +43,28 @@ export function EditBeneficiaryModal({
 
   useEffect(() => {
     if (isOpen && contractPerson) {
-      setName(contractPerson.person.name || '');
-      setTypeIdentityCard(contractPerson.person.typeIdentityCard || 'V');
-      setIdentityCard(contractPerson.person.identityCard || '');
-      
-      const currentPlanId = typeof contractPerson.person.plan === 'object'
-        ? (contractPerson.person.plan as Plan)?.id || ''
-        : (contractPerson.person.plan as unknown as string) || '';
-      setPlanId(currentPlanId);
-      
-      setRole(contractPerson.role || 'AFILIADO');
-      setIsBillingOwner(contractPerson.isBillingOwner || false);
+      const timer = setTimeout(() => {
+        setName(contractPerson.person.name || '');
+        setTypeIdentityCard(contractPerson.person.typeIdentityCard || 'V');
+        setIdentityCard(contractPerson.person.identityCard || '');
+
+        const currentPlanId =
+          typeof contractPerson.person.plan === 'object'
+            ? (contractPerson.person.plan as Plan)?.id || ''
+            : (contractPerson.person.plan as unknown as string) || '';
+        setPlanId(currentPlanId);
+
+        setRole(contractPerson.role || 'AFILIADO');
+        setIsBillingOwner(contractPerson.isBillingOwner || false);
+      }, 0);
+      return () => clearTimeout(timer);
     }
   }, [isOpen, contractPerson]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!name || !identityCard) return;
-    
+
     // Titulars don't have plans, so we send null
     await onSubmit({
       name,
@@ -83,7 +87,6 @@ export function EditBeneficiaryModal({
       )}
 
       <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-
         <div className="grid grid-cols-3 gap-3 items-center">
           <div className="flex flex-col gap-1.5 col-span-1">
             <label className="text-sm font-semibold" style={{ color: '#1a2e1a' }}>
@@ -147,7 +150,10 @@ export function EditBeneficiaryModal({
               Plan
             </label>
             <div className="relative">
-              <CreditCard className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4" style={{ color: '#6b7f6b' }} />
+              <CreditCard
+                className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4"
+                style={{ color: '#6b7f6b' }}
+              />
               <select
                 value={planId}
                 onChange={(e) => setPlanId(e.target.value)}
@@ -187,8 +193,12 @@ export function EditBeneficiaryModal({
               disabled={loading}
             />
             <div>
-              <span className="text-xs font-bold block" style={{ color: '#1a2e1a' }}>Titular del Contrato</span>
-              <span className="text-[9px] block leading-tight" style={{ color: '#6b7f6b' }}>Promover como titular del contrato</span>
+              <span className="text-xs font-bold block" style={{ color: '#1a2e1a' }}>
+                Titular del Contrato
+              </span>
+              <span className="text-[9px] block leading-tight" style={{ color: '#6b7f6b' }}>
+                Promover como titular del contrato
+              </span>
             </div>
           </label>
 
@@ -202,17 +212,27 @@ export function EditBeneficiaryModal({
               disabled={loading}
             />
             <div>
-              <span className="text-xs font-bold block" style={{ color: '#1a2e1a' }}>Titular de Factura</span>
-              <span className="text-[9px] block leading-tight" style={{ color: '#6b7f6b' }}>Responsable del cobro y facturas</span>
+              <span className="text-xs font-bold block" style={{ color: '#1a2e1a' }}>
+                Titular de Factura
+              </span>
+              <span className="text-[9px] block leading-tight" style={{ color: '#6b7f6b' }}>
+                Responsable del cobro y facturas
+              </span>
             </div>
           </label>
         </div>
 
-        <div className="mt-4 pt-4 border-t flex justify-end gap-3" style={{ borderColor: '#e2ebe2' }}>
+        <div
+          className="mt-4 pt-4 border-t flex justify-end gap-3"
+          style={{ borderColor: '#e2ebe2' }}
+        >
           <Button type="button" variant="secondary" onClick={onClose} disabled={loading}>
             Cancelar
           </Button>
-          <Button type="submit" disabled={loading || plansLoading || (role !== 'TITULAR' && !planId)}>
+          <Button
+            type="submit"
+            disabled={loading || plansLoading || (role !== 'TITULAR' && !planId)}
+          >
             {loading ? 'Guardando...' : 'Guardar Cambios'}
           </Button>
         </div>

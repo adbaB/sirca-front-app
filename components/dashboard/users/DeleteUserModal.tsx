@@ -14,7 +14,13 @@ interface DeleteUserModalProps {
   loading: boolean;
 }
 
-export function DeleteUserModal({ isOpen, onClose, onConfirm, user, loading }: DeleteUserModalProps) {
+export function DeleteUserModal({
+  isOpen,
+  onClose,
+  onConfirm,
+  user,
+  loading,
+}: DeleteUserModalProps) {
   return (
     <Modal isOpen={isOpen} onClose={onClose} title="Eliminar Usuario" maxWidth="440px">
       <div className="flex flex-col items-center text-center gap-4 py-2">
@@ -39,20 +45,10 @@ export function DeleteUserModal({ isOpen, onClose, onConfirm, user, loading }: D
         </div>
 
         <div className="flex gap-3 w-full pt-2">
-          <Button
-            variant="secondary"
-            className="flex-1"
-            onClick={onClose}
-            disabled={loading}
-          >
+          <Button variant="secondary" className="flex-1" onClick={onClose} disabled={loading}>
             Cancelar
           </Button>
-          <Button
-            variant="danger"
-            className="flex-1"
-            onClick={onConfirm}
-            loading={loading}
-          >
+          <Button variant="danger" className="flex-1" onClick={onConfirm} loading={loading}>
             Eliminar
           </Button>
         </div>

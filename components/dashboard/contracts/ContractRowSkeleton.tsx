@@ -13,7 +13,7 @@ export function ContractRowSkeleton({ index = 0 }: ContractRowSkeletonProps) {
       style={{
         borderColor: '#e2ebe2',
         animationDelay: `${index * 30}ms`,
-        animationFillMode: 'both'
+        animationFillMode: 'both',
       }}
     >
       {/* Left Side: Info & Icon Placeholder */}

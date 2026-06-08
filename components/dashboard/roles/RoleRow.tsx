@@ -15,7 +15,7 @@ interface RoleRowProps {
 
 export function RoleRow({ role, isLast, onAssignPermissions, actionLoading }: RoleRowProps) {
   const permCount = role.permissions?.length ?? 0;
-  const { can } = usePermissions()
+  const { can } = usePermissions();
   return (
     <div
       className="grid grid-cols-1 md:grid-cols-12 gap-2 md:gap-4 px-6 py-4 items-center transition-all duration-200 hover:bg-[#f8faf8] group"
@@ -50,7 +50,9 @@ export function RoleRow({ role, isLast, onAssignPermissions, actionLoading }: Ro
             </Badge>
           </>
         ) : (
-          <span className="text-xs" style={{ color: '#9ca3af' }}>Sin permisos asignados</span>
+          <span className="text-xs" style={{ color: '#9ca3af' }}>
+            Sin permisos asignados
+          </span>
         )}
       </div>
 
@@ -64,7 +66,9 @@ export function RoleRow({ role, isLast, onAssignPermissions, actionLoading }: Ro
       {/* Actions */}
       <div className="col-span-1 flex items-center justify-end">
         <button
-          onClick={  () => {if(can('update:roles')) onAssignPermissions(role)}}
+          onClick={() => {
+            if (can('update:roles')) onAssignPermissions(role);
+          }}
           disabled={actionLoading}
           className="p-2 rounded-lg transition-all duration-200 hover:bg-[#f5f3ff] hover:scale-105 disabled:opacity-50"
           style={{ color: '#7c3aed' }}

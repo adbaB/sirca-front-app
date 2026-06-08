@@ -26,21 +26,22 @@ export default function DashboardPage() {
   });
 
   // Dynamically derive active filters to avoid synchronous state-sync side-effects
-  const activeFilters = useMemo(() => ({
-    ...filters,
-    advisorUuid: advisorId || filters.advisorUuid,
-  }), [filters, advisorId]);
+  const activeFilters = useMemo(
+    () => ({
+      ...filters,
+      advisorUuid: advisorId || filters.advisorUuid,
+    }),
+    [filters, advisorId],
+  );
 
   const { data, loading } = useStatistics(activeFilters);
 
-  const displayedAdvisors = advisorId
-    ? advisors.filter((a) => a.id === advisorId)
-    : advisors;
+  const displayedAdvisors = advisorId ? advisors.filter((a) => a.id === advisorId) : advisors;
 
   return (
     <div className="flex flex-col gap-6">
-      <Can permission='read:statistics'>
-      {/* Filter Bar */}
+      <Can permission="read:statistics">
+        {/* Filter Bar */}
         <FilterBar
           filters={activeFilters}
           onFiltersChange={setFilters}
@@ -63,14 +64,13 @@ export default function DashboardPage() {
                 totalInvoiceAmount={data.summary.totalInvoiceAmount}
                 totalPaymentsPartial={data.summary.totalPaymentsPartial}
               />
-          </div>
+            </div>
 
             {/* Breakdown Table */}
-          <PaymentBreakdownTable breakdown={data.breakdown} />
+            <PaymentBreakdownTable breakdown={data.breakdown} />
           </>
         )}
       </Can>
-      
     </div>
   );
 }

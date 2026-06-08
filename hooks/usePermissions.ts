@@ -51,7 +51,7 @@ export function usePermissions(): UsePermissionsReturn {
           if (!cancelled) setSession(null);
           return;
         }
-        const data = await res.json() as SessionData;
+        const data = (await res.json()) as SessionData;
         if (!cancelled) setSession(data);
       } catch {
         if (!cancelled) setSession(null);
@@ -61,7 +61,9 @@ export function usePermissions(): UsePermissionsReturn {
     }
 
     loadSession();
-    return () => { cancelled = true; };
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   const permissions = session?.permissions ?? [];
@@ -76,7 +78,6 @@ export function usePermissions(): UsePermissionsReturn {
     can: (permission: string) => permissions.includes(permission),
     canAny: (perms: string[]) => perms.some((p) => permissions.includes(p)),
     canAll: (perms: string[]) => perms.every((p) => permissions.includes(p)),
-    hasRole: (roleName: string) =>
-      role?.toLowerCase() === roleName.toLowerCase(),
+    hasRole: (roleName: string) => role?.toLowerCase() === roleName.toLowerCase(),
   };
 }

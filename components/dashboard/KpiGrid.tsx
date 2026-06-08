@@ -1,11 +1,4 @@
-import {
-  CheckCircle,
-  AlertCircle,
-  Clock,
-  XCircle,
-  DollarSign,
-  Banknote,
-} from 'lucide-react';
+import { CheckCircle, AlertCircle, Clock, XCircle, DollarSign, Banknote } from 'lucide-react';
 import { KpiCard } from './KpiCard';
 import { formatUsd, STATUS_COLORS } from '@/lib/constants';
 import type { StatisticsSummary } from '@/lib/types';

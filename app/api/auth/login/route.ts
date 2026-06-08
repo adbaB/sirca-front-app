@@ -9,10 +9,7 @@ export async function POST(request: Request) {
     const { email, password } = body;
 
     if (!email || !password) {
-      return NextResponse.json(
-        { error: 'Email y contraseña son obligatorios' },
-        { status: 400 },
-      );
+      return NextResponse.json({ error: 'Email y contraseña son obligatorios' }, { status: 400 });
     }
 
     // Authenticate against the NestJS backend
@@ -78,9 +75,6 @@ export async function POST(request: Request) {
 
     return response;
   } catch {
-    return NextResponse.json(
-      { error: 'Error procesando la solicitud' },
-      { status: 500 },
-    );
+    return NextResponse.json({ error: 'Error procesando la solicitud' }, { status: 500 });
   }
 }

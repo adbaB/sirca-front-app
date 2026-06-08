@@ -49,14 +49,22 @@ export function UsersManager() {
 
   const handleCreate = async (data: {
     email: string;
-    password: string;
+    password?: string;
     roleId?: string;
     advisorId?: string | null;
   }) => {
     setActionLoading(true);
     setActionError('');
     try {
-      await createUser(data);
+      if (!data.password) {
+        throw new Error('La contraseña es obligatoria');
+      }
+      await createUser({
+        email: data.email,
+        password: data.password,
+        roleId: data.roleId,
+        advisorId: data.advisorId,
+      });
       setShowCreateModal(false);
     } catch (err) {
       setActionError(err instanceof Error ? err.message : 'Error creando usuario');

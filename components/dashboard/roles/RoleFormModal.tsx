@@ -5,6 +5,7 @@ import { FileText } from 'lucide-react';
 import { Modal } from '@/components/ui/Modal';
 import { Input } from '@/components/ui/Input';
 import { Button } from '@/components/ui/Button';
+import { ErrorBanner } from '@/components/ui/ErrorBanner';
 
 interface RoleFormModalProps {
   isOpen: boolean;
@@ -55,8 +56,15 @@ function RoleFormInner({ onClose, onSubmit, loading, error }: Omit<RoleFormModal
 
       {/* Description (textarea-like via Input + extra rows via CSS trick) */}
       <div className="flex flex-col gap-1.5">
-        <label htmlFor="role-form-desc" className="text-sm font-semibold" style={{ color: '#374151' }}>
-          Descripción <span className="font-normal" style={{ color: '#9ca3af' }}>(opcional)</span>
+        <label
+          htmlFor="role-form-desc"
+          className="text-sm font-semibold"
+          style={{ color: '#374151' }}
+        >
+          Descripción{' '}
+          <span className="font-normal" style={{ color: '#9ca3af' }}>
+            (opcional)
+          </span>
         </label>
         <textarea
           id="role-form-desc"
@@ -78,17 +86,7 @@ function RoleFormInner({ onClose, onSubmit, loading, error }: Omit<RoleFormModal
       </div>
 
       {/* Error */}
-      {displayError && (
-        <div
-          className="flex items-center gap-2 rounded-xl px-4 py-3 text-sm animate-[shake_0.4s_ease-in-out]"
-          style={{ backgroundColor: '#fef2f2', border: '1px solid #fecaca', color: '#b91c1c' }}
-        >
-          <svg className="h-4 w-4 shrink-0" fill="currentColor" viewBox="0 0 20 20">
-            <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
-          </svg>
-          {displayError}
-        </div>
-      )}
+      <ErrorBanner message={displayError} />
 
       {/* Actions */}
       <div className="flex gap-3 justify-end pt-2">
@@ -107,7 +105,13 @@ export function RoleFormModal({ isOpen, onClose, onSubmit, loading, error }: Rol
   const formKey = isOpen ? 'new' : 'closed';
   return (
     <Modal isOpen={isOpen} onClose={onClose} title="Crear Rol" maxWidth="480px">
-      <RoleFormInner key={formKey} onClose={onClose} onSubmit={onSubmit} loading={loading} error={error} />
+      <RoleFormInner
+        key={formKey}
+        onClose={onClose}
+        onSubmit={onSubmit}
+        loading={loading}
+        error={error}
+      />
     </Modal>
   );
 }

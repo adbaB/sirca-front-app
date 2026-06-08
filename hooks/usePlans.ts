@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
+import { api } from '@/lib/api';
 import type { Plan } from '@/lib/types';
 
 export function usePlans() {
@@ -11,10 +12,8 @@ export function usePlans() {
   const fetchPlans = useCallback(async () => {
     try {
       setLoading(true);
-      const res = await fetch('/plans');
-      if (!res.ok) throw new Error('Error cargando planes');
-      const data = await res.json();
-      setPlans(data);
+      const data = await api.get<Plan[]>('/plans');
+      setPlans(data || []);
       setError(null);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Error desconocido');
@@ -29,11 +28,9 @@ export function usePlans() {
     async function load() {
       try {
         setLoading(true);
-        const res = await fetch('/plans');
-        if (!res.ok) throw new Error('Error cargando planes');
-        const data = await res.json() as Plan[];
+        const data = await api.get<Plan[]>('/plans');
         if (!cancelled) {
-          setPlans(data);
+          setPlans(data || []);
           setError(null);
         }
       } catch (err) {
@@ -46,7 +43,9 @@ export function usePlans() {
     }
 
     load();
-    return () => { cancelled = true; };
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   return { plans, loading, error, fetchPlans };

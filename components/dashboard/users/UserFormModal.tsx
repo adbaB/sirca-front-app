@@ -1,18 +1,25 @@
 'use client';
 
-import React, { useState } from 'react';
-import { Mail, Lock, Shield, User as UserIcon } from 'lucide-react';
-import { Modal } from '@/components/ui/Modal';
-import { Input } from '@/components/ui/Input';
 import { Button } from '@/components/ui/Button';
+import { ErrorBanner } from '@/components/ui/ErrorBanner';
+import { Input } from '@/components/ui/Input';
+import { Modal } from '@/components/ui/Modal';
 import { Switch } from '@/components/ui/Switch';
 import { useAdvisors } from '@/hooks/useAdvisors';
-import type { User, Role } from '@/lib/types';
+import type { Role, User } from '@/lib/types';
+import { Lock, Mail, Shield, User as UserIcon } from 'lucide-react';
+import React, { useState } from 'react';
 
 interface UserFormModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSubmit: (data: { email: string; password: string; roleId?: string; isActive?: boolean; advisorId?: string | null }) => Promise<void>;
+  onSubmit: (data: {
+    email: string;
+    password?: string;
+    roleId?: string;
+    isActive?: boolean;
+    advisorId?: string | null;
+  }) => Promise<void>;
   roles: Role[];
   loading: boolean;
   error: string;
@@ -20,7 +27,14 @@ interface UserFormModalProps {
 }
 
 /* ─── Inner form — state is initialized directly from props on mount ─── */
-function UserFormInner({ onClose, onSubmit, roles, loading, error, user }: Omit<UserFormModalProps, 'isOpen'>) {
+function UserFormInner({
+  onClose,
+  onSubmit,
+  roles,
+  loading,
+  error,
+  user,
+}: Omit<UserFormModalProps, 'isOpen'>) {
   const isEditing = !!user;
   const { advisors } = useAdvisors();
 
@@ -52,13 +66,19 @@ function UserFormInner({ onClose, onSubmit, roles, loading, error, user }: Omit<
       return;
     }
 
-    const data: Record<string, unknown> = { email };
+    const data: {
+      email: string;
+      password?: string;
+      roleId?: string;
+      isActive?: boolean;
+      advisorId?: string | null;
+    } = { email: email.trim() };
     if (!isEditing) data.password = password;
     if (roleId) data.roleId = roleId;
     data.advisorId = advisorId || null;
     if (isEditing) data.isActive = isActive;
 
-    await onSubmit(data as { email: string; password: string; roleId?: string; isActive?: boolean; advisorId?: string | null });
+    await onSubmit(data);
   };
 
   const displayError = validationError || error;
@@ -91,11 +111,18 @@ function UserFormInner({ onClose, onSubmit, roles, loading, error, user }: Omit<
 
       {/* Role Selector */}
       <div className="flex flex-col gap-1.5">
-        <label htmlFor="user-form-role" className="text-sm font-semibold" style={{ color: '#374151' }}>
+        <label
+          htmlFor="user-form-role"
+          className="text-sm font-semibold"
+          style={{ color: '#374151' }}
+        >
           Rol
         </label>
         <div className="relative">
-          <div className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2" style={{ color: '#9ca3af' }}>
+          <div
+            className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2"
+            style={{ color: '#9ca3af' }}
+          >
             <Shield className="h-4 w-4" />
           </div>
           <select
@@ -125,11 +152,18 @@ function UserFormInner({ onClose, onSubmit, roles, loading, error, user }: Omit<
 
       {/* Advisor Selector */}
       <div className="flex flex-col gap-1.5 animate-fade-in">
-        <label htmlFor="user-form-advisor" className="text-sm font-semibold" style={{ color: '#374151' }}>
+        <label
+          htmlFor="user-form-advisor"
+          className="text-sm font-semibold"
+          style={{ color: '#374151' }}
+        >
           Asesor Vinculado
         </label>
         <div className="relative">
-          <div className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2" style={{ color: '#9ca3af' }}>
+          <div
+            className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2"
+            style={{ color: '#9ca3af' }}
+          >
             <UserIcon className="h-4 w-4" />
           </div>
           <select
@@ -164,22 +198,16 @@ function UserFormInner({ onClose, onSubmit, roles, loading, error, user }: Omit<
           checked={isActive}
           onChange={setIsActive}
           label="Estado del usuario"
-          description={isActive ? 'El usuario puede acceder al sistema' : 'El acceso del usuario está deshabilitado'}
+          description={
+            isActive
+              ? 'El usuario puede acceder al sistema'
+              : 'El acceso del usuario está deshabilitado'
+          }
         />
       )}
 
       {/* Error */}
-      {displayError && (
-        <div
-          className="flex items-center gap-2 rounded-xl px-4 py-3 text-sm animate-[shake_0.4s_ease-in-out]"
-          style={{ backgroundColor: '#fef2f2', border: '1px solid #fecaca', color: '#b91c1c' }}
-        >
-          <svg className="h-4 w-4 shrink-0" fill="currentColor" viewBox="0 0 20 20">
-            <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
-          </svg>
-          {displayError}
-        </div>
-      )}
+      <ErrorBanner message={displayError} />
 
       {/* Actions */}
       <div className="flex gap-3 justify-end pt-2">
@@ -195,7 +223,15 @@ function UserFormInner({ onClose, onSubmit, roles, loading, error, user }: Omit<
 }
 
 /* ─── Outer shell — mounts a fresh UserFormInner on each open ─────────── */
-export function UserFormModal({ isOpen, onClose, onSubmit, roles, loading, error, user }: UserFormModalProps) {
+export function UserFormModal({
+  isOpen,
+  onClose,
+  onSubmit,
+  roles,
+  loading,
+  error,
+  user,
+}: UserFormModalProps) {
   // Changing `key` causes React to unmount + remount UserFormInner,
   // resetting all its state without any useEffect.
   const formKey = isOpen ? (user?.id ?? 'new') : 'closed';

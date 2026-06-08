@@ -45,14 +45,7 @@ interface CanProps {
  *   <UsersSection />
  * </Can>
  */
-export function Can({
-  permission,
-  any,
-  all,
-  role,
-  children,
-  fallback = null,
-}: CanProps) {
+export function Can({ permission, any, all, role, children, fallback = null }: CanProps) {
   const { can, canAny, canAll, hasRole, loading } = usePermissions();
 
   // Mientras carga, no muestra nada para evitar parpadeos

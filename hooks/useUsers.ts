@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
+import { api } from '@/lib/api';
 import type { User } from '@/lib/types';
 
 export function useUsers() {
@@ -11,10 +12,8 @@ export function useUsers() {
   const fetchUsers = useCallback(async () => {
     try {
       setLoading(true);
-      const res = await fetch('/users');
-      if (!res.ok) throw new Error('Error cargando usuarios');
-      const data = await res.json();
-      setUsers(data);
+      const data = await api.get<User[]>('/users');
+      setUsers(data || []);
       setError(null);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Error desconocido');
@@ -31,11 +30,9 @@ export function useUsers() {
     async function load() {
       try {
         setLoading(true);
-        const res = await fetch('/users');
-        if (!res.ok) throw new Error('Error cargando usuarios');
-        const data = await res.json() as User[];
+        const data = await api.get<User[]>('/users');
         if (!cancelled) {
-          setUsers(data);
+          setUsers(data || []);
           setError(null);
         }
       } catch (err) {
@@ -48,58 +45,42 @@ export function useUsers() {
     }
 
     load();
-    return () => { cancelled = true; };
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
-  const createUser = async (payload: { email: string; password: string; roleId?: string; advisorId?: string | null }) => {
-    const res = await fetch('/users', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload),
-    });
-    if (!res.ok) {
-      const data = await res.json().catch(() => ({}));
-      throw new Error(data.message || 'Error creando usuario');
-    }
+  const createUser = async (payload: {
+    email: string;
+    password: string;
+    roleId?: string;
+    advisorId?: string | null;
+  }) => {
+    await api.post('/users', payload);
     await fetchUsers();
-    return res.json();
   };
 
-  const updateUser = async (id: string, payload: { email?: string; isActive?: boolean; roleId?: string | null; advisorId?: string | null }) => {
-    const res = await fetch(`/users/${id}`, {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload),
-    });
-    if (!res.ok) {
-      const data = await res.json().catch(() => ({}));
-      throw new Error(data.message || 'Error actualizando usuario');
-    }
+  const updateUser = async (
+    id: string,
+    payload: {
+      email?: string;
+      isActive?: boolean;
+      roleId?: string | null;
+      advisorId?: string | null;
+    },
+  ) => {
+    await api.put(`/users/${id}`, payload);
     await fetchUsers();
-    return res.json();
   };
 
   const deleteUser = async (id: string) => {
-    const res = await fetch(`/users/${id}`, { method: 'DELETE' });
-    if (!res.ok) {
-      const data = await res.json().catch(() => ({}));
-      throw new Error(data.message || 'Error eliminando usuario');
-    }
+    await api.delete(`/users/${id}`);
     await fetchUsers();
   };
 
   const assignRole = async (userId: string, roleId: string) => {
-    const res = await fetch(`/users/${userId}/role`, {
-      method: 'PATCH',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ roleId }),
-    });
-    if (!res.ok) {
-      const data = await res.json().catch(() => ({}));
-      throw new Error(data.message || 'Error asignando rol');
-    }
+    await api.patch(`/users/${userId}/role`, { roleId });
     await fetchUsers();
-    return res.json();
   };
 
   return { users, loading, error, fetchUsers, createUser, updateUser, deleteUser, assignRole };

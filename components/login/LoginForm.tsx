@@ -68,7 +68,8 @@ export function LoginForm() {
       </div>
 
       {/* Card */}
-      <div className="rounded-2xl border bg-white shadow-lg shadow-black/[0.06] p-8"
+      <div
+        className="rounded-2xl border bg-white shadow-lg shadow-black/[0.06] p-8"
         style={{ borderColor: '#e2ebe2' }}
       >
         <h2 className="text-xl font-bold mb-1" style={{ color: '#1a2e1a' }}>
@@ -101,11 +102,16 @@ export function LoginForm() {
           />
 
           {error && (
-            <div className="flex items-center gap-2 rounded-xl px-4 py-3 text-sm animate-[shake_0.4s_ease-in-out]"
+            <div
+              className="flex items-center gap-2 rounded-xl px-4 py-3 text-sm animate-[shake_0.4s_ease-in-out]"
               style={{ backgroundColor: '#fef2f2', border: '1px solid #fecaca', color: '#b91c1c' }}
             >
               <svg className="h-4 w-4 shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+                <path
+                  fillRule="evenodd"
+                  d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
+                  clipRule="evenodd"
+                />
               </svg>
               {error}
             </div>

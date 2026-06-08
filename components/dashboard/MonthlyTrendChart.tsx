@@ -34,13 +34,20 @@ function CustomTooltip({
 }) {
   if (!active || !payload?.length) return null;
   return (
-    <div className="rounded-xl border bg-white px-4 py-3 shadow-lg" style={{ borderColor: '#e2ebe2' }}>
-      <p className="text-xs font-bold mb-2" style={{ color: '#1a2e1a' }}>{label}</p>
+    <div
+      className="rounded-xl border bg-white px-4 py-3 shadow-lg"
+      style={{ borderColor: '#e2ebe2' }}
+    >
+      <p className="text-xs font-bold mb-2" style={{ color: '#1a2e1a' }}>
+        {label}
+      </p>
       {payload.map((item) => (
         <div key={item.name} className="flex items-center gap-2 text-xs">
           <span className="h-2 w-2 rounded-full" style={{ backgroundColor: item.color }} />
           <span style={{ color: '#6b7f6b' }}>{item.name}:</span>
-          <span className="font-semibold" style={{ color: '#1a2e1a' }}>{item.value}</span>
+          <span className="font-semibold" style={{ color: '#1a2e1a' }}>
+            {item.value}
+          </span>
         </div>
       ))}
     </div>
@@ -72,11 +79,7 @@ export function MonthlyTrendChart({ data }: MonthlyTrendChartProps) {
             tickLine={false}
             tick={{ fill: '#9ca3af', fontSize: 12 }}
           />
-          <YAxis
-            axisLine={false}
-            tickLine={false}
-            tick={{ fill: '#9ca3af', fontSize: 12 }}
-          />
+          <YAxis axisLine={false} tickLine={false} tick={{ fill: '#9ca3af', fontSize: 12 }} />
           <Tooltip content={<CustomTooltip />} />
           <Legend
             wrapperStyle={{ paddingTop: 16 }}

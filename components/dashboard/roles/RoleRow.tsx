@@ -1,10 +1,9 @@
 'use client';
 
-import React from 'react';
-import { Shield, Key } from 'lucide-react';
 import { Badge } from '@/components/ui/Badge';
-import type { Role } from '@/lib/types';
 import { usePermissions } from '@/hooks/usePermissions';
+import type { Role } from '@/lib/types';
+import { Key, Shield } from 'lucide-react';
 
 interface RoleRowProps {
   role: Role;
@@ -15,7 +14,8 @@ interface RoleRowProps {
 
 export function RoleRow({ role, isLast, onAssignPermissions, actionLoading }: RoleRowProps) {
   const permCount = role.permissions?.length ?? 0;
-  const { can } = usePermissions()
+  const { can } = usePermissions();
+  const canUpdateRoles = can('update:roles');
   return (
     <div
       className="grid grid-cols-1 md:grid-cols-12 gap-2 md:gap-4 px-6 py-4 items-center transition-all duration-200 hover:bg-[#f8faf8] group"
@@ -50,7 +50,9 @@ export function RoleRow({ role, isLast, onAssignPermissions, actionLoading }: Ro
             </Badge>
           </>
         ) : (
-          <span className="text-xs" style={{ color: '#9ca3af' }}>Sin permisos asignados</span>
+          <span className="text-xs" style={{ color: '#9ca3af' }}>
+            Sin permisos asignados
+          </span>
         )}
       </div>
 
@@ -64,8 +66,10 @@ export function RoleRow({ role, isLast, onAssignPermissions, actionLoading }: Ro
       {/* Actions */}
       <div className="col-span-1 flex items-center justify-end">
         <button
-          onClick={  () => {if(can('update:roles')) onAssignPermissions(role)}}
-          disabled={actionLoading}
+          onClick={() => {
+            if (canUpdateRoles) onAssignPermissions(role);
+          }}
+          disabled={actionLoading || !canUpdateRoles}
           className="p-2 rounded-lg transition-all duration-200 hover:bg-[#f5f3ff] hover:scale-105 disabled:opacity-50"
           style={{ color: '#7c3aed' }}
           title="Asignar permisos"

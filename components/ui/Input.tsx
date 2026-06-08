@@ -19,7 +19,8 @@ export function Input({ label, icon, error, type, className = '', id, ...props }
       </label>
       <div className="relative">
         {icon && (
-          <div className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2"
+          <div
+            className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2"
             style={{ color: '#9ca3af' }}
           >
             {icon}

@@ -25,13 +25,7 @@ interface TooltipPayloadItem {
   payload: { label: string; value: number; color: string };
 }
 
-function CustomTooltip({
-  active,
-  payload,
-}: {
-  active?: boolean;
-  payload?: TooltipPayloadItem[];
-}) {
+function CustomTooltip({ active, payload }: { active?: boolean; payload?: TooltipPayloadItem[] }) {
   if (!active || !payload?.length) return null;
   const d = payload[0].payload;
   return (
@@ -59,9 +53,7 @@ export function PartialPaymentChart({
 }: PartialPaymentChartProps) {
   const remaining = Math.max(0, totalInvoiceAmount - totalCollected);
   const progressPercent =
-    totalInvoiceAmount > 0
-      ? Math.min(100, (totalCollected / totalInvoiceAmount) * 100)
-      : 0;
+    totalInvoiceAmount > 0 ? Math.min(100, (totalCollected / totalInvoiceAmount) * 100) : 0;
 
   const chartData = [
     {

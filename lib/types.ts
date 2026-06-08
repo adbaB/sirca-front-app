@@ -108,7 +108,7 @@ export interface Plan {
 
 export interface Person {
   id: string;
-  typeIdentityCard: 'V' | 'E' | 'P' | 'J' | 'G' | 'C' |'PN';
+  typeIdentityCard: 'V' | 'E' | 'P' | 'J' | 'G' | 'C' | 'PN';
   identityCard: string;
   name: string;
   birthDate?: Date;
@@ -117,6 +117,7 @@ export interface Person {
   status: 'ACTIVE' | 'INACTIVE';
   createdAt: string;
   updatedAt: string;
+  contractPersons?: ContractPerson[];
 }
 
 export interface Contract {
@@ -152,7 +153,7 @@ export interface Payment {
   paymentMethod: string;
   referenceNumber: string;
   status: 'PROCESSING' | 'COMPLETED' | 'REJECTED';
-  metadata?: Record<string, any> | null;
+  metadata?: Record<string, unknown> | null;
   person?: Person | null;
   invoice?: Invoice | null;
   createdAt: string;
@@ -184,7 +185,6 @@ export interface Surplus {
   payment: Payment;
   invoice: Invoice | null;
 }
-
 
 export interface PaginationResponse<T> {
   data: T[];

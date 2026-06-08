@@ -15,7 +15,15 @@ interface UserRowProps {
   actionLoading: boolean;
 }
 
-export function UserRow({ user, roles, isLast, onEdit, onDelete, onAssignRole, actionLoading }: UserRowProps) {
+export function UserRow({
+  user,
+  roles,
+  isLast,
+  onEdit,
+  onDelete,
+  onAssignRole,
+  actionLoading,
+}: UserRowProps) {
   const [showRoleDropdown, setShowRoleDropdown] = useState(false);
 
   return (
@@ -73,8 +81,8 @@ export function UserRow({ user, roles, isLast, onEdit, onDelete, onAssignRole, a
                 <button
                   key={role.id}
                   onClick={async () => {
-                     await onAssignRole(user.id, role.id);
-                     setShowRoleDropdown(false);
+                    await onAssignRole(user.id, role.id);
+                    setShowRoleDropdown(false);
                   }}
                   className="w-full text-left px-4 py-2 text-sm transition-colors duration-150 hover:bg-[#f0fdf4]"
                   style={{
@@ -103,7 +111,11 @@ export function UserRow({ user, roles, isLast, onEdit, onDelete, onAssignRole, a
       {/* Advisor */}
       <div className="col-span-2 hidden md:block">
         <p className="text-xs font-semibold" style={{ color: '#374151' }}>
-          {user.advisor?.name ?? <span className="italic" style={{ color: '#9ca3af' }}>Sin asesor</span>}
+          {user.advisor?.name ?? (
+            <span className="italic" style={{ color: '#9ca3af' }}>
+              Sin asesor
+            </span>
+          )}
         </p>
       </div>
 
@@ -116,11 +128,7 @@ export function UserRow({ user, roles, isLast, onEdit, onDelete, onAssignRole, a
 
       {/* ID */}
       <div className="col-span-1 hidden md:block">
-        <p
-          className="text-xs font-mono truncate"
-          style={{ color: '#9ca3af' }}
-          title={user.id}
-        >
+        <p className="text-xs font-mono truncate" style={{ color: '#9ca3af' }} title={user.id}>
           {user.id.slice(0, 8)}...
         </p>
       </div>

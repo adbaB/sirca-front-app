@@ -1,6 +1,6 @@
 'use client';
 
-import type { ReactNode } from 'react';
+import { useId, type ReactNode } from 'react';
 
 interface SwitchProps {
   /** Valor actual del switch */
@@ -27,15 +27,27 @@ interface SwitchProps {
  *   description={isActive ? 'Activo' : 'Deshabilitado'}
  * />
  */
-export function Switch({ checked, onChange, label, description, id, disabled = false }: SwitchProps) {
-  const switchId = id ?? 'switch';
+export function Switch({
+  checked,
+  onChange,
+  label,
+  description,
+  id,
+  disabled = false,
+}: SwitchProps) {
+  const generatedId = useId();
+  const switchId = id ?? generatedId;
 
   return (
     <div className="flex items-center justify-between py-2">
       {(label || description) && (
         <div className="flex flex-col gap-0.5 pr-4">
           {label && (
-            <p id={`${switchId}-label`} className="text-sm font-semibold" style={{ color: '#374151' }}>
+            <p
+              id={`${switchId}-label`}
+              className="text-sm font-semibold"
+              style={{ color: '#374151' }}
+            >
               {label}
             </p>
           )}

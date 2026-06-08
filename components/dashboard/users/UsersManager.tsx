@@ -6,18 +6,19 @@ import { Input } from '@/components/ui/Input';
 import { Button } from '@/components/ui/Button';
 import { Badge } from '@/components/ui/Badge';
 import { Card } from '@/components/ui/Card';
+import { ErrorBanner } from '@/components/ui/ErrorBanner';
 import { Spinner } from '@/components/ui/Spinner';
 import { UserRow } from './UserRow';
 import { UserFormModal } from './UserFormModal';
 import { DeleteUserModal } from './DeleteUserModal';
 import { useUsers } from '@/hooks/useUsers';
-import { useRoles } from '@/hooks/useRoles';
+import { useRolesCrud } from '@/hooks/useRolesCrud';
 import type { User } from '@/lib/types';
 import { Can } from '@/components/ui/Can';
 
 export function UsersManager() {
   const { users, loading, createUser, updateUser, deleteUser, assignRole } = useUsers();
-  const { roles } = useRoles();
+  const { roles } = useRolesCrud();
 
   const [search, setSearch] = useState('');
   const [filterStatus, setFilterStatus] = useState<'all' | 'active' | 'inactive'>('all');
@@ -46,11 +47,24 @@ export function UsersManager() {
   const activeCount = users.filter((u) => u.isActive).length;
   const inactiveCount = users.filter((u) => !u.isActive).length;
 
-  const handleCreate = async (data: { email: string; password: string; roleId?: string; advisorId?: string | null }) => {
+  const handleCreate = async (data: {
+    email: string;
+    password?: string;
+    roleId?: string;
+    advisorId?: string | null;
+  }) => {
     setActionLoading(true);
     setActionError('');
     try {
-      await createUser(data);
+      if (!data.password) {
+        throw new Error('La contraseña es obligatoria');
+      }
+      await createUser({
+        email: data.email,
+        password: data.password,
+        roleId: data.roleId,
+        advisorId: data.advisorId,
+      });
       setShowCreateModal(false);
     } catch (err) {
       setActionError(err instanceof Error ? err.message : 'Error creando usuario');
@@ -59,7 +73,10 @@ export function UsersManager() {
     }
   };
 
-  const handleUpdate = async (id: string, data: { email?: string; isActive?: boolean; roleId?: string | null; advisorId?: string | null }) => {
+  const handleUpdate = async (
+    id: string,
+    data: { email?: string; isActive?: boolean; roleId?: string | null; advisorId?: string | null },
+  ) => {
     setActionLoading(true);
     setActionError('');
     try {
@@ -111,7 +128,12 @@ export function UsersManager() {
             </p>
           </div>
           <Can permission="create:users">
-            <Button onClick={() => { setActionError(''); setShowCreateModal(true); }}>
+            <Button
+              onClick={() => {
+                setActionError('');
+                setShowCreateModal(true);
+              }}
+            >
               <Plus className="h-4 w-4" />
               Nuevo Usuario
             </Button>
@@ -200,8 +222,16 @@ export function UsersManager() {
                   className="px-4 py-2.5 rounded-xl text-sm font-medium transition-all duration-200"
                   style={
                     filterStatus === status
-                      ? { backgroundColor: '#dcfce7', color: '#16a34a', border: '1px solid #bbf7d0' }
-                      : { backgroundColor: '#f1f5f1', color: '#6b7f6b', border: '1px solid #e2ebe2' }
+                      ? {
+                          backgroundColor: '#dcfce7',
+                          color: '#16a34a',
+                          border: '1px solid #bbf7d0',
+                        }
+                      : {
+                          backgroundColor: '#f1f5f1',
+                          color: '#6b7f6b',
+                          border: '1px solid #e2ebe2',
+                        }
                   }
                 >
                   {status === 'all' ? 'Todos' : status === 'active' ? 'Activos' : 'Inactivos'}
@@ -212,20 +242,7 @@ export function UsersManager() {
         </Card>
 
         {/* Error Banner */}
-        {actionError && (
-          <div
-            className="flex items-center gap-2 rounded-xl px-4 py-3 text-sm animate-[shake_0.4s_ease-in-out]"
-            style={{ backgroundColor: '#fef2f2', border: '1px solid #fecaca', color: '#b91c1c' }}
-          >
-            <svg className="h-4 w-4 shrink-0" fill="currentColor" viewBox="0 0 20 20">
-              <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
-            </svg>
-            {actionError}
-            <button onClick={() => setActionError('')} className="ml-auto text-xs underline">
-              Cerrar
-            </button>
-          </div>
-        )}
+        <ErrorBanner message={actionError} onClose={() => setActionError('')} />
 
         {/* Users Table */}
         {loading ? (
@@ -274,8 +291,14 @@ export function UsersManager() {
                   user={user}
                   roles={roles}
                   isLast={index === filteredUsers.length - 1}
-                  onEdit={() => { setActionError(''); setEditingUser(user); }}
-                  onDelete={() => { setActionError(''); setDeletingUser(user); }}
+                  onEdit={() => {
+                    setActionError('');
+                    setEditingUser(user);
+                  }}
+                  onDelete={() => {
+                    setActionError('');
+                    setDeletingUser(user);
+                  }}
                   onAssignRole={handleAssignRole}
                   actionLoading={actionLoading}
                 />

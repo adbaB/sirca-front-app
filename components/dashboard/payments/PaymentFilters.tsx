@@ -40,8 +40,8 @@ export function PaymentFilters({
           onChange={(e) => onSearchChange(e.target.value)}
         />
         {searchText && (
-          <button 
-            onClick={() => onSearchChange('')} 
+          <button
+            onClick={() => onSearchChange('')}
             className="absolute right-3 top-1/2 -translate-y-1/2 text-[#6b7f6b] hover:text-[#1a2e1a] cursor-pointer"
           >
             <X className="h-4 w-4" />
@@ -78,7 +78,9 @@ export function PaymentFilters({
         >
           <option value="">Todos los años</option>
           {years.map((y) => (
-            <option key={y} value={y}>{y}</option>
+            <option key={y} value={y}>
+              {y}
+            </option>
           ))}
         </select>
       </div>

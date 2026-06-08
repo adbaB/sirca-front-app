@@ -32,7 +32,7 @@ export const ContractCardRow = React.memo(function ContractCardRow({
       style={{
         borderColor: '#e2ebe2',
         animationDelay: `${index * 25}ms`,
-        animationFillMode: 'both'
+        animationFillMode: 'both',
       }}
     >
       {/* Left Side: Info & Icon */}
@@ -40,9 +40,10 @@ export const ContractCardRow = React.memo(function ContractCardRow({
         <div
           className="h-12 w-12 rounded-xl flex items-center justify-center shrink-0 transition-transform duration-300 group-hover:scale-105"
           style={{
-            background: contract.status === 'ACTIVE'
-              ? 'linear-gradient(135deg, #16a34a 0%, #22c55e 100%)'
-              : 'linear-gradient(135deg, #9ca3af 0%, #d1d5db 100%)',
+            background:
+              contract.status === 'ACTIVE'
+                ? 'linear-gradient(135deg, #16a34a 0%, #22c55e 100%)'
+                : 'linear-gradient(135deg, #9ca3af 0%, #d1d5db 100%)',
           }}
         >
           <FileText className="h-6 w-6 text-white" />
@@ -52,11 +53,14 @@ export const ContractCardRow = React.memo(function ContractCardRow({
             <span className="font-mono font-bold text-sm" style={{ color: '#1a2e1a' }}>
               {contract.code}
             </span>
-            <span className="text-[10px] font-bold uppercase tracking-wider" style={{ color: '#8c9e8c' }}>
-              {format(new Date(contract.affiliationDate), "d MMM, yyyy", { locale: es })}
+            <span
+              className="text-[10px] font-bold uppercase tracking-wider"
+              style={{ color: '#8c9e8c' }}
+            >
+              {format(new Date(contract.affiliationDate), 'd MMM, yyyy', { locale: es })}
             </span>
           </div>
-          
+
           <p className="text-sm font-semibold truncate mt-1" style={{ color: '#374151' }}>
             {owner?.name ?? 'Sin titular asignado'}
           </p>
@@ -135,7 +139,11 @@ export const ContractCardRow = React.memo(function ContractCardRow({
         <Link
           href={`/dashboard/contratos/${contract.id}?from=seguimiento`}
           className="inline-flex items-center justify-center h-10 px-4 rounded-xl text-xs font-bold transition-all duration-300 hover:scale-105 shadow-sm"
-          style={{ backgroundColor: stageStyles.bg, color: stageStyles.color, border: `1px solid ${stageStyles.border}` }}
+          style={{
+            backgroundColor: stageStyles.bg,
+            color: stageStyles.color,
+            border: `1px solid ${stageStyles.border}`,
+          }}
         >
           Detalles
           <ChevronRight className="h-3.5 w-3.5 ml-1" />

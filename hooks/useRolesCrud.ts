@@ -13,7 +13,7 @@ export function useRolesCrud() {
     try {
       setLoading(true);
       const data = await api.get<Role[]>('/roles');
-      setRoles(data);
+      setRoles(data || []);
       setError(null);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Error desconocido');
@@ -30,7 +30,7 @@ export function useRolesCrud() {
         setLoading(true);
         const data = await api.get<Role[]>('/roles');
         if (!cancelled) {
-          setRoles(data);
+          setRoles(data || []);
           setError(null);
         }
       } catch (err) {

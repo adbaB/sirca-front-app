@@ -14,14 +14,17 @@ import { es } from 'date-fns/locale';
 /** Format a date string/Date to "d MMM, yyyy" in Spanish locale. Returns "N/A" for falsy values. */
 export function formatDate(dateStr: string | Date | undefined | null): string {
   if (!dateStr) return 'N/A';
-  return format(new Date(dateStr), 'd MMM, yyyy', { locale: es });
+  const parsed = new Date(dateStr);
+  if (isNaN(parsed.getTime())) return 'N/A';
+  return format(parsed, 'd MMM, yyyy', { locale: es });
 }
 
 /** Format a "YYYY-MM" billing month string to "Enero 2025" style. */
 export function formatBillingMonth(monthStr: string): string {
   if (!monthStr || !monthStr.includes('-')) return monthStr;
   const [year, month] = monthStr.split('-');
-  const date = new Date(parseInt(year), parseInt(month) - 1, 1);
+  const date = new Date(parseInt(year, 10), parseInt(month, 10) - 1, 1);
+  if (Number.isNaN(date.getTime())) return monthStr
   const formatted = format(date, 'MMMM yyyy', { locale: es });
   return formatted.charAt(0).toUpperCase() + formatted.slice(1);
 }

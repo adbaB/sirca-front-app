@@ -17,7 +17,7 @@ export function useAdvisors() {
         setLoading(true);
         const data = await api.get<Advisor[]>('/advisors');
         if (!cancelled) {
-          setAdvisors(data);
+          setAdvisors(data || []);
           setError(null);
         }
       } catch (err) {

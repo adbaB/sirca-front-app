@@ -1,7 +1,7 @@
 'use client';
 
-import { useState, useCallback } from 'react';
 import type { Person } from '@/lib/types';
+import { useCallback, useState } from 'react';
 
 export function usePersons() {
   const [loading, setLoading] = useState(false);
@@ -12,7 +12,9 @@ export function usePersons() {
       try {
         setLoading(true);
         setError(null);
-        const res = await fetch(`/persons/by-identity/${typeIdentityCard}/${identityCard}`);
+        const type = encodeURIComponent(typeIdentityCard);
+        const id = encodeURIComponent(identityCard);
+        const res = await fetch(`/persons/by-identity/${type}/${id}`);
         if (!res.ok) {
           if (res.status === 404) return null;
           throw new Error('Error buscando persona');

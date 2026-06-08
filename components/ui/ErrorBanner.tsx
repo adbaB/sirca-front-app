@@ -1,6 +1,5 @@
 'use client';
 
-import React from 'react';
 import { AlertCircle, X } from 'lucide-react';
 
 interface ErrorBannerProps {
@@ -18,6 +17,8 @@ export function ErrorBanner({ message, onClose, className = '' }: ErrorBannerPro
 
   return (
     <div
+      role="alert"
+      aria-live="assertive"
       className={`flex items-center gap-2 rounded-xl px-4 py-3 text-sm font-medium animate-[shake_0.4s_ease-in-out] ${className}`}
       style={{
         backgroundColor: '#fef2f2',
@@ -29,6 +30,7 @@ export function ErrorBanner({ message, onClose, className = '' }: ErrorBannerPro
       <span className="flex-1">{message}</span>
       {onClose && (
         <button
+          type="button"
           onClick={onClose}
           className="ml-auto p-0.5 rounded hover:bg-red-100 transition-colors"
           aria-label="Cerrar"

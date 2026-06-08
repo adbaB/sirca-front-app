@@ -24,7 +24,7 @@ export function useStatistics(filters: DashboardFilters) {
 
         const json = await api.get<StatisticsResponse>(`/statistics?${params.toString()}`);
         if (!cancelled) {
-          setData(json);
+          setData(json || null);
           setError(null);
         }
       } catch (err) {

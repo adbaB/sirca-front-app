@@ -13,7 +13,7 @@ export function useUsers() {
     try {
       setLoading(true);
       const data = await api.get<User[]>('/users');
-      setUsers(data);
+      setUsers(data || []);
       setError(null);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Error desconocido');
@@ -32,7 +32,7 @@ export function useUsers() {
         setLoading(true);
         const data = await api.get<User[]>('/users');
         if (!cancelled) {
-          setUsers(data);
+          setUsers(data || []);
           setError(null);
         }
       } catch (err) {

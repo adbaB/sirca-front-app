@@ -21,7 +21,7 @@ export function usePayments(initialPage = 1, initialLimit = 10) {
   const fetchPendingCount = useCallback(async () => {
     try {
       const data = await api.get<{ count: number }>('/billing/payments/pending-count');
-      setPendingCount(data.count || 0);
+      setPendingCount(data?.count || 0);
     } catch (err) {
       console.error('Error al cargar conteo de pagos pendientes:', err);
     }
@@ -50,9 +50,9 @@ export function usePayments(initialPage = 1, initialLimit = 10) {
           `/billing/payments?${params.toString()}`,
         );
 
-        setPayments(data.data || []);
+        setPayments(data?.data || []);
         setMeta(
-          data.meta || {
+          data?.meta || {
             totalItems: 0,
             currentPage: page,
             totalPages: 1,
@@ -75,8 +75,10 @@ export function usePayments(initialPage = 1, initialLimit = 10) {
     const updatedPayment = await api.patch<Payment>(`/billing/payments/${id}/approve`);
 
     // Update states
-    setSelectedPayment(updatedPayment);
-    setPayments((prev) => prev.map((p) => (p.id === id ? updatedPayment : p)));
+    if (updatedPayment) {
+      setSelectedPayment(updatedPayment);
+      setPayments((prev) => prev.map((p) => (p.id === id ? updatedPayment : p)));
+    }
 
     // Refresh dynamic badge counts
     fetchPendingCount();
@@ -87,8 +89,10 @@ export function usePayments(initialPage = 1, initialLimit = 10) {
     const updatedPayment = await api.patch<Payment>(`/billing/payments/${id}/reject`, { reason });
 
     // Update states
-    setSelectedPayment(updatedPayment);
-    setPayments((prev) => prev.map((p) => (p.id === id ? updatedPayment : p)));
+    if (updatedPayment) {
+      setSelectedPayment(updatedPayment);
+      setPayments((prev) => prev.map((p) => (p.id === id ? updatedPayment : p)));
+    }
 
     // Refresh dynamic badge counts
     fetchPendingCount();
@@ -101,7 +105,7 @@ export function usePayments(initialPage = 1, initialLimit = 10) {
       try {
         const data = await api.get<{ count: number }>('/billing/payments/pending-count');
         if (active) {
-          setPendingCount(data.count || 0);
+          setPendingCount(data?.count || 0);
         }
       } catch (err) {
         console.error('Error al cargar conteo de pagos pendientes:', err);

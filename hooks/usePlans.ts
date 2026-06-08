@@ -13,7 +13,7 @@ export function usePlans() {
     try {
       setLoading(true);
       const data = await api.get<Plan[]>('/plans');
-      setPlans(data);
+      setPlans(data || []);
       setError(null);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Error desconocido');
@@ -30,7 +30,7 @@ export function usePlans() {
         setLoading(true);
         const data = await api.get<Plan[]>('/plans');
         if (!cancelled) {
-          setPlans(data);
+          setPlans(data || []);
           setError(null);
         }
       } catch (err) {

@@ -10,7 +10,7 @@
  * Execute a fetch request with automatic JSON headers and error handling.
  * Throws an error with the server's message if the response is not OK.
  */
-export async function apiRequest<T>(url: string, options?: RequestInit): Promise<T> {
+export async function apiRequest<T>(url: string, options?: RequestInit): Promise<T | undefined> {
   const res = await fetch(url, {
     headers: { 'Content-Type': 'application/json', ...options?.headers },
     ...options,
@@ -23,7 +23,7 @@ export async function apiRequest<T>(url: string, options?: RequestInit): Promise
 
   // Handle 204 No Content
   const text = await res.text();
-  if (!text) return undefined as T;
+  if (!text) return undefined;
   return JSON.parse(text) as T;
 }
 

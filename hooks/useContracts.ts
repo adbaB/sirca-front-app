@@ -2,6 +2,7 @@
 
 import type { Contract, PaginationResponse } from '@/lib/types';
 import { useCallback, useState } from 'react';
+import { api } from '../lib/api';
 
 export function useContracts(initialPage = 1, initialLimit = 10, advisorId: string | null = null) {
   const [contracts, setContracts] = useState<Contract[]>([]);
@@ -38,14 +39,12 @@ export function useContracts(initialPage = 1, initialLimit = 10, advisorId: stri
         const yearParam = year ? `&year=${encodeURIComponent(year)}` : '';
         const statusParam = status ? `&status=${encodeURIComponent(status)}` : '';
 
-        const res = await fetch(
+        const data = await api.get<PaginationResponse<Contract>>(
           `/contracts?page=${page}&limit=${limit}${searchParam}${advisorParam}${stageParam}${monthParam}${yearParam}${statusParam}`,
         );
-        if (!res.ok) throw new Error('Error cargando contratos');
-        const data: PaginationResponse<Contract> = await res.json();
-        setContracts(data.data || []);
+        setContracts(data?.data || []);
         setMeta(
-          data.meta || {
+          data?.meta || {
             totalItems: 0,
             itemCount: 0,
             itemsPerPage: limit,

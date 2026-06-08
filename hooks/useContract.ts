@@ -13,7 +13,7 @@ export function useContract(id: string) {
     try {
       setLoading(true);
       const data = await api.get<Contract>(`/contracts/${id}`);
-      setContract(data);
+      setContract(data || null);
       setError(null);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Error desconocido');
@@ -30,7 +30,7 @@ export function useContract(id: string) {
         setLoading(true);
         const data = await api.get<Contract>(`/contracts/${id}`);
         if (!cancelled) {
-          setContract(data);
+          setContract(data || null);
           setError(null);
         }
       } catch (err) {

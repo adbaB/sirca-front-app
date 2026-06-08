@@ -1,6 +1,6 @@
 'use client';
 
-import type { ReactNode } from 'react';
+import { useId, type ReactNode } from 'react';
 
 interface SwitchProps {
   /** Valor actual del switch */
@@ -35,7 +35,8 @@ export function Switch({
   id,
   disabled = false,
 }: SwitchProps) {
-  const switchId = id ?? 'switch';
+  const generatedId = useId();
+  const switchId = id ?? generatedId;
 
   return (
     <div className="flex items-center justify-between py-2">

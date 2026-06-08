@@ -1,21 +1,21 @@
 'use client';
 
-import React, { useState } from 'react';
-import { Mail, Lock, Shield, User as UserIcon } from 'lucide-react';
-import { Modal } from '@/components/ui/Modal';
-import { Input } from '@/components/ui/Input';
 import { Button } from '@/components/ui/Button';
 import { ErrorBanner } from '@/components/ui/ErrorBanner';
+import { Input } from '@/components/ui/Input';
+import { Modal } from '@/components/ui/Modal';
 import { Switch } from '@/components/ui/Switch';
 import { useAdvisors } from '@/hooks/useAdvisors';
-import type { User, Role } from '@/lib/types';
+import type { Role, User } from '@/lib/types';
+import { Lock, Mail, Shield, User as UserIcon } from 'lucide-react';
+import React, { useState } from 'react';
 
 interface UserFormModalProps {
   isOpen: boolean;
   onClose: () => void;
   onSubmit: (data: {
     email: string;
-    password: string;
+    password?: string;
     roleId?: string;
     isActive?: boolean;
     advisorId?: string | null;
@@ -66,21 +66,19 @@ function UserFormInner({
       return;
     }
 
-    const data: Record<string, unknown> = { email };
+    const data: {
+      email: string;
+      password?: string;
+      roleId?: string;
+      isActive?: boolean;
+      advisorId?: string | null;
+    } = { email: email.trim() };
     if (!isEditing) data.password = password;
     if (roleId) data.roleId = roleId;
     data.advisorId = advisorId || null;
     if (isEditing) data.isActive = isActive;
 
-    await onSubmit(
-      data as {
-        email: string;
-        password: string;
-        roleId?: string;
-        isActive?: boolean;
-        advisorId?: string | null;
-      },
-    );
+    await onSubmit(data);
   };
 
   const displayError = validationError || error;

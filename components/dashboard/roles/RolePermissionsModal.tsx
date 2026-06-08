@@ -40,7 +40,7 @@ function PermissionsInner({
       try {
         setFetchingPerms(true);
         const data = await api.get<{ data: Permission[] }>('/permissions?limit=1000');
-        if (!cancelled) setAllPermissions(data.data);
+        if (!cancelled) setAllPermissions(data?.data || []);
       } catch {
         // silently fail — user will see empty list
       } finally {

@@ -85,6 +85,7 @@ export function ContractDetails({ contractId }: { contractId: string }) {
     type: 'recalculate' | 'approve' | 'reject' | null;
     id: string;
   }>({ type: null, id: '' });
+  
   const [rejectionPromptReason, setRejectionPromptReason] = useState('');
 
   // States for affiliates pagination and search

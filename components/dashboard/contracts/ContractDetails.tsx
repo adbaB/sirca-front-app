@@ -85,7 +85,7 @@ export function ContractDetails({ contractId }: { contractId: string }) {
     type: 'recalculate' | 'approve' | 'reject' | null;
     id: string;
   }>({ type: null, id: '' });
-  
+
   const [rejectionPromptReason, setRejectionPromptReason] = useState('');
 
   // States for affiliates pagination and search
@@ -984,27 +984,29 @@ export function ContractDetails({ contractId }: { contractId: string }) {
                                                 </button>
                                               )}
 
-                                              {payment.status !== 'COMPLETED' && (
-                                                <button
-                                                  onClick={() => handleApprovePayment(payment.id)}
-                                                  disabled={invoiceActionLoading}
-                                                  className="inline-flex items-center justify-center p-2 rounded-lg text-emerald-600 hover:text-emerald-700 hover:bg-emerald-50 border border-gray-200 hover:border-emerald-200 transition-colors cursor-pointer"
-                                                  title="Aprobar Pago"
-                                                >
-                                                  <Check className="h-4 w-4" />
-                                                </button>
-                                              )}
+                                              <Can permission="update:payments">
+                                                {payment.status !== 'COMPLETED' && (
+                                                  <button
+                                                    onClick={() => handleApprovePayment(payment.id)}
+                                                    disabled={invoiceActionLoading}
+                                                    className="inline-flex items-center justify-center p-2 rounded-lg text-emerald-600 hover:text-emerald-700 hover:bg-emerald-50 border border-gray-200 hover:border-emerald-200 transition-colors cursor-pointer"
+                                                    title="Aprobar Pago"
+                                                  >
+                                                    <Check className="h-4 w-4" />
+                                                  </button>
+                                                )}
 
-                                              {payment.status !== 'REJECTED' && (
-                                                <button
-                                                  onClick={() => handleRejectPayment(payment.id)}
-                                                  disabled={invoiceActionLoading}
-                                                  className="inline-flex items-center justify-center p-2 rounded-lg text-red-600 hover:text-red-700 hover:bg-red-50 border border-gray-200 hover:border-red-200 transition-colors cursor-pointer"
-                                                  title="Rechazar Pago"
-                                                >
-                                                  <Trash2 className="h-4 w-4" />
-                                                </button>
-                                              )}
+                                                {payment.status !== 'REJECTED' && (
+                                                  <button
+                                                    onClick={() => handleRejectPayment(payment.id)}
+                                                    disabled={invoiceActionLoading}
+                                                    className="inline-flex items-center justify-center p-2 rounded-lg text-red-600 hover:text-red-700 hover:bg-red-50 border border-gray-200 hover:border-red-200 transition-colors cursor-pointer"
+                                                    title="Rechazar Pago"
+                                                  >
+                                                    <Trash2 className="h-4 w-4" />
+                                                  </button>
+                                                )}
+                                              </Can>
                                             </div>
                                           </div>
                                         </div>

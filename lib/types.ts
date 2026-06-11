@@ -114,6 +114,12 @@ export interface LoginResponse {
 export interface Plan {
   id: string;
   name: string;
+  maxAge: number;
+  amount: number;
+  percentage: number;
+  status: 'ACTIVE' | 'INACTIVE';
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 export interface Person {

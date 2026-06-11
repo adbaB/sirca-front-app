@@ -48,5 +48,43 @@ export function usePlans() {
     };
   }, []);
 
-  return { plans, loading, error, fetchPlans };
+  const createPlan = async (payload: {
+    name: string;
+    maxAge: number;
+    amount: number;
+    percentage: number;
+    status: 'ACTIVE' | 'INACTIVE';
+  }) => {
+    await api.post('/plans', payload);
+    await fetchPlans();
+  };
+
+  const updatePlan = async (
+    id: string,
+    payload: {
+      name?: string;
+      maxAge?: number;
+      amount?: number;
+      percentage?: number;
+      status?: 'ACTIVE' | 'INACTIVE';
+    },
+  ) => {
+    await api.patch(`/plans/${id}`, payload);
+    await fetchPlans();
+  };
+
+  const deletePlan = async (id: string) => {
+    await api.delete(`/plans/${id}`);
+    await fetchPlans();
+  };
+
+  return {
+    plans,
+    loading,
+    error,
+    fetchPlans,
+    createPlan,
+    updatePlan,
+    deletePlan,
+  };
 }

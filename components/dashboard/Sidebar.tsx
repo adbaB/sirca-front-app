@@ -5,8 +5,8 @@ import {
   ClipboardList,
   CreditCard,
   FileText,
-  LayoutDashboard,
   Layers,
+  LayoutDashboard,
   Shield,
   TrendingUp,
   Users,
@@ -34,18 +34,6 @@ const navItems = [
     href: '/dashboard/seguimiento',
     icon: TrendingUp,
     permission: 'read:pipeline',
-  },
-  {
-    label: 'Usuarios',
-    href: '/dashboard/usuarios',
-    icon: Users,
-    permission: 'read:users',
-  },
-  {
-    label: 'Roles',
-    href: '/dashboard/roles',
-    icon: Shield,
-    permission: 'read:roles',
   },
   {
     label: 'Contratos',
@@ -79,6 +67,18 @@ const configItems = [
     href: '/dashboard/planes',
     icon: Layers,
     permission: 'read:plans',
+  },
+  {
+    label: 'Usuarios',
+    href: '/dashboard/usuarios',
+    icon: Users,
+    permission: 'read:users',
+  },
+  {
+    label: 'Roles',
+    href: '/dashboard/roles',
+    icon: Shield,
+    permission: 'read:roles',
   },
 ];
 

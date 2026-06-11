@@ -99,6 +99,18 @@ export function usePayments(initialPage = 1, initialLimit = 10) {
     return updatedPayment;
   };
 
+  const updatePaymentDate = async (id: string, paymentDate: string): Promise<Payment | undefined> => {
+    const updatedPayment = await api.patch<Payment>(`/billing/payments/${id}/date`, { paymentDate });
+
+    // Update states
+    if (updatedPayment) {
+      setSelectedPayment(updatedPayment);
+      setPayments((prev) => prev.map((p) => (p.id === id ? updatedPayment : p)));
+    }
+
+    return updatedPayment;
+  };
+
   useEffect(() => {
     let active = true;
     async function loadPendingCount() {
@@ -128,6 +140,7 @@ export function usePayments(initialPage = 1, initialLimit = 10) {
     fetchPayments,
     approvePayment,
     rejectPayment,
+    updatePaymentDate,
     fetchPendingCount,
   };
 }

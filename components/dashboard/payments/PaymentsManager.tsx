@@ -38,6 +38,7 @@ export function PaymentsManager() {
     fetchPayments,
     approvePayment,
     rejectPayment,
+    updatePaymentDate,
   } = usePayments(page, limit);
 
   // Debounce search text and reset page to 1 asynchronously
@@ -100,6 +101,19 @@ export function PaymentsManager() {
     }
   };
 
+  const handleUpdateDate = async (newDate: string) => {
+    if (!selectedPayment) return;
+    try {
+      setActionLoading(true);
+      setActionError(null);
+      await updatePaymentDate(selectedPayment.id, newDate);
+    } catch (err) {
+      setActionError(err instanceof Error ? err.message : 'Error al actualizar la fecha de pago');
+    } finally {
+      setActionLoading(false);
+    }
+  };
+
   return (
     <div className="flex flex-col gap-6">
       {/* HEADER SECTION */}
@@ -149,6 +163,7 @@ export function PaymentsManager() {
           selectedPayment={selectedPayment}
           onApprove={handleApprove}
           onReject={handleReject}
+          onUpdateDate={handleUpdateDate}
           actionLoading={actionLoading}
           actionError={actionError}
           setActionError={setActionError}

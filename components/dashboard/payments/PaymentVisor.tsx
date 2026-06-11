@@ -7,20 +7,37 @@ import {
   Calendar,
   Check,
   CheckCircle2,
+  Edit2,
   Eye,
   FileText,
   Landmark,
   Loader2,
   User,
+  X,
   ZoomIn,
 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { formatDate, getMethodStyle, getStatusStyle } from './paymentUtils';
+import { usePermissions } from '@/hooks/usePermissions';
+
+const toLocalInputDate = (dateStr: string): string => {
+  try {
+    const date = new Date(dateStr);
+    if (isNaN(date.getTime())) return '';
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  } catch {
+    return '';
+  }
+};
 
 interface PaymentVisorProps {
   selectedPayment: Payment | null;
   onApprove: () => Promise<void>;
   onReject: (reason: string) => Promise<void>;
+  onUpdateDate: (date: string) => Promise<void>;
   actionLoading: boolean;
   actionError: string | null;
   setActionError: (error: string | null) => void;
@@ -31,6 +48,7 @@ export function PaymentVisor({
   selectedPayment,
   onApprove,
   onReject,
+  onUpdateDate,
   actionLoading,
   actionError,
   setActionError,
@@ -38,6 +56,11 @@ export function PaymentVisor({
 }: PaymentVisorProps) {
   const [isRejecting, setIsRejecting] = useState(false);
   const [rejectionReason, setRejectionReason] = useState('');
+  const [isEditingDate, setIsEditingDate] = useState(false);
+  const [editDate, setEditDate] = useState('');
+
+  const { can } = usePermissions();
+  const canUpdatePayments = can('update:payments');
 
   // Reset local state when active payment changes
   useEffect(() => {
@@ -45,10 +68,27 @@ export function PaymentVisor({
       setIsRejecting(false);
       setRejectionReason('');
       setActionError(null);
+      setIsEditingDate(false);
+      if (selectedPayment) {
+        const dateVal = selectedPayment.paymentDate || selectedPayment.createdAt || '';
+        setEditDate(toLocalInputDate(dateVal));
+      } else {
+        setEditDate('');
+      }
     }, 0);
 
     return () => window.clearTimeout(resetTimeout);
-  }, [selectedPayment?.id, setActionError]);
+  }, [selectedPayment?.id, setActionError, selectedPayment]);
+
+  const handleSaveDate = async () => {
+    if (!editDate) return;
+    try {
+      await onUpdateDate(editDate);
+      setIsEditingDate(false);
+    } catch (err) {
+      // Error is already handled by parent/visor state
+    }
+  };
 
   const handleLocalReject = () => {
     if (!rejectionReason.trim()) {
@@ -154,10 +194,58 @@ export function PaymentVisor({
                     </p>
                   </div>
                   <div>
-                    <p className="text-[10px] text-[#6b7f6b] uppercase">Fecha de Operación</p>
-                    <p className="text-xs font-medium text-[#1a2e1a]">
-                      {formatDate(selectedPayment.paymentDate || selectedPayment.createdAt)}
+                    <p className="text-[10px] text-[#6b7f6b] uppercase flex items-center gap-1.5">
+                      Fecha de Operación
+                      {canUpdatePayments && !isEditingDate && (
+                        <button
+                          onClick={() => setIsEditingDate(true)}
+                          disabled={actionLoading}
+                          title="Editar fecha de pago"
+                          className="text-gray-400 hover:text-gray-600 disabled:opacity-50 transition-colors cursor-pointer"
+                        >
+                          <Edit2 className="h-3 w-3" />
+                        </button>
+                      )}
                     </p>
+                    {isEditingDate ? (
+                      <div className="flex items-center gap-1.5 mt-1 animate-fadeIn">
+                        <input
+                          type="date"
+                          value={editDate}
+                          onChange={(e) => setEditDate(e.target.value)}
+                          disabled={actionLoading}
+                          className="px-2 py-1 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-[#16a34a]/20 focus:border-[#16a34a] rounded-lg text-xs bg-white text-gray-900"
+                        />
+                        <button
+                          onClick={handleSaveDate}
+                          disabled={actionLoading || !editDate}
+                          className="p-1 bg-[#16a34a] text-white rounded-lg hover:bg-[#15803d] disabled:opacity-50 transition-colors cursor-pointer flex items-center justify-center"
+                          title="Guardar"
+                        >
+                          {actionLoading ? (
+                            <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                          ) : (
+                            <Check className="h-3.5 w-3.5" />
+                          )}
+                        </button>
+                        <button
+                          onClick={() => {
+                            setIsEditingDate(false);
+                            const dateVal = selectedPayment.paymentDate || selectedPayment.createdAt || '';
+                            setEditDate(toLocalInputDate(dateVal));
+                          }}
+                          disabled={actionLoading}
+                          className="p-1 border border-gray-200 text-gray-500 rounded-lg hover:bg-gray-100 disabled:opacity-50 transition-colors cursor-pointer flex items-center justify-center"
+                          title="Cancelar"
+                        >
+                          <X className="h-3.5 w-3.5" />
+                        </button>
+                      </div>
+                    ) : (
+                      <p className="text-xs font-medium text-[#1a2e1a]">
+                        {formatDate(selectedPayment.paymentDate || selectedPayment.createdAt)}
+                      </p>
+                    )}
                   </div>
                   <div>
                     <p className="text-[10px] text-[#6b7f6b] uppercase">Monto Reportado</p>

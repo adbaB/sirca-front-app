@@ -1,9 +1,11 @@
 'use client';
 
 import {
+  Briefcase,
   ClipboardList,
   CreditCard,
   FileText,
+  Layers,
   LayoutDashboard,
   Shield,
   TrendingUp,
@@ -34,18 +36,6 @@ const navItems = [
     permission: 'read:pipeline',
   },
   {
-    label: 'Usuarios',
-    href: '/dashboard/usuarios',
-    icon: Users,
-    permission: 'read:users',
-  },
-  {
-    label: 'Roles',
-    href: '/dashboard/roles',
-    icon: Shield,
-    permission: 'read:roles',
-  },
-  {
     label: 'Contratos',
     href: '/dashboard/contratos',
     icon: FileText,
@@ -62,6 +52,33 @@ const navItems = [
     href: '/dashboard/reportes',
     icon: ClipboardList,
     permission: 'read:reports',
+  },
+];
+
+const configItems = [
+  {
+    label: 'Carteras',
+    href: '/dashboard/portafolios',
+    icon: Briefcase,
+    permission: 'read:portfolios',
+  },
+  {
+    label: 'Planes',
+    href: '/dashboard/planes',
+    icon: Layers,
+    permission: 'read:plans',
+  },
+  {
+    label: 'Usuarios',
+    href: '/dashboard/usuarios',
+    icon: Users,
+    permission: 'read:users',
+  },
+  {
+    label: 'Roles',
+    href: '/dashboard/roles',
+    icon: Shield,
+    permission: 'read:roles',
   },
 ];
 
@@ -110,14 +127,14 @@ function SidebarContent({ pathname, onClose }: { pathname: string; onClose?: () 
       </div>
 
       {/* Navigation */}
-      <nav className="flex-1 px-3 py-4">
+      <nav className="flex-1 px-3 py-4 overflow-y-auto">
         <p
           className="px-3 mb-2 text-[10px] font-semibold uppercase tracking-widest"
           style={{ color: '#9ca3af' }}
         >
           Menú
         </p>
-        <ul className="flex flex-col gap-1">
+        <ul className="flex flex-col gap-1 mb-6">
           {navItems.map((item) => {
             const isActive =
               item.href === '/dashboard'
@@ -171,6 +188,61 @@ function SidebarContent({ pathname, onClose }: { pathname: string; onClose?: () 
             );
           })}
         </ul>
+
+        <Can any={['read:portfolios', 'read:plans']}>
+          <p
+            className="px-3 mb-2 text-[10px] font-semibold uppercase tracking-widest"
+            style={{ color: '#9ca3af' }}
+          >
+            Configuración
+          </p>
+          <ul className="flex flex-col gap-1">
+            {configItems.map((item) => {
+              const isActive = pathname.startsWith(item.href);
+              const Icon = item.icon;
+              return (
+                <Can permission={item.permission} key={item.href}>
+                  <li>
+                    <Link
+                      href={item.href}
+                      onClick={onClose}
+                      className="relative flex items-center justify-between rounded-xl px-3 py-2.5 text-sm font-medium transition-all duration-200"
+                      style={
+                        isActive
+                          ? { backgroundColor: '#dcfce7', color: '#16a34a' }
+                          : { color: '#6b7f6b' }
+                      }
+                      onMouseEnter={(e) => {
+                        if (!isActive) {
+                          (e.currentTarget as HTMLAnchorElement).style.backgroundColor = '#f1f5f1';
+                          (e.currentTarget as HTMLAnchorElement).style.color = '#1a2e1a';
+                        }
+                      }}
+                      onMouseLeave={(e) => {
+                        if (!isActive) {
+                          (e.currentTarget as HTMLAnchorElement).style.backgroundColor =
+                            'transparent';
+                          (e.currentTarget as HTMLAnchorElement).style.color = '#6b7f6b';
+                        }
+                      }}
+                    >
+                      {isActive && (
+                        <span
+                          className="absolute left-0 top-1/2 -translate-y-1/2 h-6 w-[3px] rounded-r-full"
+                          style={{ backgroundColor: '#16a34a' }}
+                        />
+                      )}
+                      <div className="flex items-center gap-3">
+                        <Icon className="h-[18px] w-[18px]" />
+                        <span>{item.label}</span>
+                      </div>
+                    </Link>
+                  </li>
+                </Can>
+              );
+            })}
+          </ul>
+        </Can>
       </nav>
 
       {/* Footer */}

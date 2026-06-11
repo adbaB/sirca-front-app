@@ -8,6 +8,16 @@ export interface Advisor {
   name: string;
 }
 
+export interface Portfolio {
+  id: string;
+  name: string;
+  code: string;
+  status: 'ACTIVE' | 'INACTIVE';
+  percentage: number;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
 /** High-level KPI summary for a given period */
 export interface StatisticsSummary {
   totalPaymentsVerified: number;
@@ -104,6 +114,12 @@ export interface LoginResponse {
 export interface Plan {
   id: string;
   name: string;
+  maxAge: number;
+  amount: number;
+  percentage: number;
+  status: 'ACTIVE' | 'INACTIVE';
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 export interface Person {
@@ -128,7 +144,10 @@ export interface Contract {
   contractPersons?: ContractPerson[];
   invoices?: Invoice[];
   surpluses?: Surplus[] | null;
-  advisor: Advisor;
+  advisor?: Advisor | null;
+  advisorId?: string | null;
+  portfolio?: Portfolio | null;
+  portfolioId?: string | null;
   status: 'ACTIVE' | 'INACTIVE';
   createdAt: string;
   updatedAt: string;

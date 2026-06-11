@@ -2,18 +2,18 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { api } from '@/lib/api';
-import type { Plan } from '@/lib/types';
+import type { Portfolio } from '@/lib/types';
 
-export function usePlans() {
-  const [plans, setPlans] = useState<Plan[]>([]);
+export function usePortfolios() {
+  const [portfolios, setPortfolios] = useState<Portfolio[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const fetchPlans = useCallback(async () => {
+  const fetchPortfolios = useCallback(async () => {
     try {
       setLoading(true);
-      const data = await api.get<Plan[]>('/plans');
-      setPlans(data || []);
+      const data = await api.get<Portfolio[]>('/portfolios');
+      setPortfolios(data || []);
       setError(null);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Error desconocido');
@@ -28,9 +28,9 @@ export function usePlans() {
     async function load() {
       try {
         setLoading(true);
-        const data = await api.get<Plan[]>('/plans');
+        const data = await api.get<Portfolio[]>('/portfolios');
         if (!cancelled) {
-          setPlans(data || []);
+          setPortfolios(data || []);
           setError(null);
         }
       } catch (err) {
@@ -48,43 +48,41 @@ export function usePlans() {
     };
   }, []);
 
-  const createPlan = async (payload: {
+  const createPortfolio = async (payload: {
     name: string;
-    maxAge: number;
-    amount: number;
+    code: string;
+    status?: 'ACTIVE' | 'INACTIVE';
     percentage: number;
-    status: 'ACTIVE' | 'INACTIVE';
   }) => {
-    await api.post('/plans', payload);
-    await fetchPlans();
+    await api.post('/portfolios', payload);
+    await fetchPortfolios();
   };
 
-  const updatePlan = async (
+  const updatePortfolio = async (
     id: string,
     payload: {
       name?: string;
-      maxAge?: number;
-      amount?: number;
-      percentage?: number;
+      code?: string;
       status?: 'ACTIVE' | 'INACTIVE';
+      percentage?: number;
     },
   ) => {
-    await api.patch(`/plans/${id}`, payload);
-    await fetchPlans();
+    await api.patch(`/portfolios/${id}`, payload);
+    await fetchPortfolios();
   };
 
-  const deletePlan = async (id: string) => {
-    await api.delete(`/plans/${id}`);
-    await fetchPlans();
+  const deletePortfolio = async (id: string) => {
+    await api.delete(`/portfolios/${id}`);
+    await fetchPortfolios();
   };
 
   return {
-    plans,
+    portfolios,
     loading,
     error,
-    fetchPlans,
-    createPlan,
-    updatePlan,
-    deletePlan,
+    fetchPortfolios,
+    createPortfolio,
+    updatePortfolio,
+    deletePortfolio,
   };
 }

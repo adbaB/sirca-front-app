@@ -42,6 +42,11 @@ const nextConfig: NextConfig = {
         destination: `${API_BASE_URL}/contracts/:path*`,
       },
       {
+        // /portfolios/** → backend:3000/portfolios/**
+        source: '/portfolios/:path*',
+        destination: `${API_BASE_URL}/portfolios/:path*`,
+      },
+      {
         // /affiliates/** → backend:3000/affiliates/**
         source: '/affiliates/:path*',
         destination: `${API_BASE_URL}/affiliates/:path*`,

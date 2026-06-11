@@ -47,6 +47,7 @@ import {
   Trash2,
   UserCheck,
   User as UserIcon,
+  Briefcase,
 } from 'lucide-react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
@@ -1200,6 +1201,32 @@ export function ContractDetails({ contractId }: { contractId: string }) {
                       </p>
                     )}
                   </div>
+                </div>
+
+                <div
+                  className="flex justify-between items-center pb-4"
+                  style={{ borderBottom: '1px solid #f1f5f1' }}
+                >
+                  <div className="flex items-center gap-2 text-sm" style={{ color: '#6b7f6b' }}>
+                    <UserIcon className="h-4 w-4" />
+                    Asesor
+                  </div>
+                  <span className="text-sm font-semibold" style={{ color: '#1a2e1a' }}>
+                    {contract.advisor?.name || 'Sin asesor'}
+                  </span>
+                </div>
+
+                <div
+                  className="flex justify-between items-center pb-4"
+                  style={{ borderBottom: '1px solid #f1f5f1' }}
+                >
+                  <div className="flex items-center gap-2 text-sm" style={{ color: '#6b7f6b' }}>
+                    <Briefcase className="h-4 w-4" />
+                    Cartera
+                  </div>
+                  <span className="text-sm font-semibold uppercase" style={{ color: '#1a2e1a' }}>
+                    {contract.portfolio ? `${contract.portfolio.name} (${contract.portfolio.code}) - ${contract.portfolio.percentage}%` : 'Sin cartera'}
+                  </span>
                 </div>
 
                 <div className="flex justify-between items-center">

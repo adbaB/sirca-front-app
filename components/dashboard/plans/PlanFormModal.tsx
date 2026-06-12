@@ -14,7 +14,7 @@ interface PlanFormModalProps {
     name: string;
     maxAge: number;
     amount: number;
-    percentage: number;
+    commissionAmount: number;
     status: 'ACTIVE' | 'INACTIVE';
   }) => Promise<void>;
   loading?: boolean;
@@ -33,7 +33,9 @@ export function PlanFormModal({
   const [name, setName] = useState(plan?.name || '');
   const [maxAge, setMaxAge] = useState(plan?.maxAge?.toString() || '0');
   const [amount, setAmount] = useState(plan?.amount?.toString() || '0');
-  const [percentage, setPercentage] = useState(plan?.percentage?.toString() || '0');
+  const [commissionAmount, setCommissionAmount] = useState(
+    plan?.commissionAmount?.toString() || '0',
+  );
   const [status, setStatus] = useState<'ACTIVE' | 'INACTIVE'>(plan?.status || 'ACTIVE');
 
   const [prevPlan, setPrevPlan] = useState<Plan | null | undefined>(plan);
@@ -43,7 +45,7 @@ export function PlanFormModal({
     setName(plan?.name || '');
     setMaxAge(plan?.maxAge?.toString() || '0');
     setAmount(plan?.amount?.toString() || '0');
-    setPercentage(plan?.percentage?.toString() || '0');
+    setCommissionAmount(plan?.commissionAmount?.toString() || '0');
     setStatus(plan?.status || 'ACTIVE');
   }
 
@@ -53,7 +55,7 @@ export function PlanFormModal({
       name: name.trim(),
       maxAge: Number(maxAge) || 0,
       amount: Number(amount) || 0,
-      percentage: Number(percentage) || 0,
+      commissionAmount: Number(commissionAmount) || 0,
       status,
     });
   };
@@ -137,13 +139,13 @@ export function PlanFormModal({
           </div>
         </div>
 
-        {/* Porcentaje */}
+        {/* Comisión */}
         <div className="flex flex-col gap-1.5">
           <label className="text-sm font-semibold" style={{ color: '#1a2e1a' }}>
-            Porcentaje (%)
+            Comisión por Afiliado ($)
           </label>
           <div className="relative">
-            <Percent
+            <DollarSign
               className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4"
               style={{ color: '#6b7f6b' }}
             />
@@ -151,11 +153,10 @@ export function PlanFormModal({
               type="number"
               step="0.01"
               min="0"
-              max="100"
               required
               placeholder="0.00"
-              value={percentage}
-              onChange={(e) => setPercentage(e.target.value)}
+              value={commissionAmount}
+              onChange={(e) => setCommissionAmount(e.target.value)}
               className="w-full h-11 pl-10 pr-4 bg-[#f1f5f1] border border-[#e2ebe2] rounded-xl text-sm font-medium outline-none focus:ring-2 focus:ring-[#16a34a]/20 transition-all text-gray-900"
               disabled={loading}
             />

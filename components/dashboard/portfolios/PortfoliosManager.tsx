@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Search, Plus, Briefcase, Percent, Activity } from 'lucide-react';
+import { Search, Plus, Briefcase, DollarSign, Activity } from 'lucide-react';
 import { Input } from '@/components/ui/Input';
 import { Button } from '@/components/ui/Button';
 import { Badge } from '@/components/ui/Badge';
@@ -16,14 +16,8 @@ import type { Portfolio } from '@/lib/types';
 import { Can } from '@/components/ui/Can';
 
 export function PortfoliosManager() {
-  const {
-    portfolios,
-    loading,
-    error,
-    createPortfolio,
-    updatePortfolio,
-    deletePortfolio,
-  } = usePortfolios();
+  const { portfolios, loading, error, createPortfolio, updatePortfolio, deletePortfolio } =
+    usePortfolios();
 
   const [search, setSearch] = useState('');
   const [showCreateModal, setShowCreateModal] = useState(false);
@@ -42,14 +36,18 @@ export function PortfoliosManager() {
   });
 
   const activePortfolios = portfolios.filter((p) => p.status === 'ACTIVE');
-  const avgPercentage = activePortfolios.length > 0
-    ? (activePortfolios.reduce((acc, p) => acc + Number(p.percentage), 0) / activePortfolios.length).toFixed(2)
-    : '0.00';
+  const avgCommission =
+    activePortfolios.length > 0
+      ? (
+          activePortfolios.reduce((acc, p) => acc + Number(p.commissionAmount), 0) /
+          activePortfolios.length
+        ).toFixed(2)
+      : '0.00';
 
   const handleCreate = async (data: {
     name: string;
     code: string;
-    percentage: number;
+    commissionAmount: number;
     status: 'ACTIVE' | 'INACTIVE';
   }) => {
     setActionLoading(true);
@@ -67,7 +65,7 @@ export function PortfoliosManager() {
   const handleUpdate = async (data: {
     name: string;
     code: string;
-    percentage: number;
+    commissionAmount: number;
     status: 'ACTIVE' | 'INACTIVE';
   }) => {
     if (!editingPortfolio) return;
@@ -169,14 +167,14 @@ export function PortfoliosManager() {
                 className="h-12 w-12 rounded-xl flex items-center justify-center"
                 style={{ backgroundColor: '#fef9c3' }}
               >
-                <Percent className="h-6 w-6" style={{ color: '#ca8a04' }} />
+                <DollarSign className="h-6 w-6" style={{ color: '#ca8a04' }} />
               </div>
               <div>
                 <p className="text-2xl font-bold" style={{ color: '#1a2e1a' }}>
-                  {avgPercentage}%
+                  ${avgCommission}
                 </p>
                 <p className="text-xs font-medium" style={{ color: '#6b7f6b' }}>
-                  Porcentaje Promedio
+                  Comisión Promedio
                 </p>
               </div>
             </div>
@@ -215,7 +213,9 @@ export function PortfoliosManager() {
                 {search ? 'No se encontraron carteras' : 'Sin carteras registradas'}
               </h3>
               <p className="text-sm" style={{ color: '#6b7f6b' }}>
-                {search ? 'Intenta ajustar los filtros de búsqueda' : 'Registra la primera cartera para comenzar'}
+                {search
+                  ? 'Intenta ajustar los filtros de búsqueda'
+                  : 'Registra la primera cartera para comenzar'}
               </p>
             </div>
           </Card>
@@ -227,7 +227,7 @@ export function PortfoliosManager() {
               style={{ color: '#6b7f6b', borderBottom: '1px solid #e2ebe2' }}
             >
               <div className="col-span-5">Cartera</div>
-              <div className="col-span-3">Porcentaje</div>
+              <div className="col-span-3">Comisión</div>
               <div className="col-span-2">Estado</div>
               <div className="col-span-2 text-right">Acciones</div>
             </div>
@@ -308,7 +308,11 @@ export function PortfoliosManager() {
                 ? Esta acción es irreversible y podría afectar a los contratos vinculados.
               </p>
               <div className="flex justify-end gap-3">
-                <Button onClick={() => setDeletingPortfolio(null)} variant="secondary" disabled={actionLoading}>
+                <Button
+                  onClick={() => setDeletingPortfolio(null)}
+                  variant="secondary"
+                  disabled={actionLoading}
+                >
                   Cancelar
                 </Button>
                 <Button onClick={handleDelete} variant="danger" disabled={actionLoading}>

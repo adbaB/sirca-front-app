@@ -30,7 +30,7 @@ export function ContractFormModal({
 }: ContractFormModalProps) {
   const { advisors } = useAdvisors();
   const { portfolios } = usePortfolios();
-  
+
   const [status, setStatus] = useState(contract?.status || 'ACTIVE');
   const [affiliationDate, setAffiliationDate] = useState(
     contract?.affiliationDate ? format(new Date(contract.affiliationDate), 'yyyy-MM-dd') : '',

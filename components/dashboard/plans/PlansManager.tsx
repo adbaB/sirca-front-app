@@ -16,14 +16,7 @@ import type { Plan } from '@/lib/types';
 import { Can } from '@/components/ui/Can';
 
 export function PlansManager() {
-  const {
-    plans,
-    loading,
-    error,
-    createPlan,
-    updatePlan,
-    deletePlan,
-  } = usePlans();
+  const { plans, loading, error, createPlan, updatePlan, deletePlan } = usePlans();
 
   const [search, setSearch] = useState('');
   const [showCreateModal, setShowCreateModal] = useState(false);
@@ -39,15 +32,18 @@ export function PlansManager() {
   });
 
   const activePlans = plans.filter((p) => p.status === 'ACTIVE');
-  const avgPercentage = activePlans.length > 0
-    ? (activePlans.reduce((acc, p) => acc + Number(p.percentage), 0) / activePlans.length).toFixed(2)
-    : '0.00';
+  const avgCommission =
+    activePlans.length > 0
+      ? (
+          activePlans.reduce((acc, p) => acc + Number(p.commissionAmount), 0) / activePlans.length
+        ).toFixed(2)
+      : '0.00';
 
   const handleCreate = async (data: {
     name: string;
     maxAge: number;
     amount: number;
-    percentage: number;
+    commissionAmount: number;
     status: 'ACTIVE' | 'INACTIVE';
   }) => {
     setActionLoading(true);
@@ -66,7 +62,7 @@ export function PlansManager() {
     name: string;
     maxAge: number;
     amount: number;
-    percentage: number;
+    commissionAmount: number;
     status: 'ACTIVE' | 'INACTIVE';
   }) => {
     if (!editingPlan) return;
@@ -168,14 +164,14 @@ export function PlansManager() {
                 className="h-12 w-12 rounded-xl flex items-center justify-center"
                 style={{ backgroundColor: '#fef9c3' }}
               >
-                <Percent className="h-6 w-6" style={{ color: '#ca8a04' }} />
+                <DollarSign className="h-6 w-6" style={{ color: '#ca8a04' }} />
               </div>
               <div>
                 <p className="text-2xl font-bold" style={{ color: '#1a2e1a' }}>
-                  {avgPercentage}%
+                  ${avgCommission}
                 </p>
                 <p className="text-xs font-medium" style={{ color: '#6b7f6b' }}>
-                  Porcentaje Promedio
+                  Comisión Promedio
                 </p>
               </div>
             </div>
@@ -214,7 +210,9 @@ export function PlansManager() {
                 {search ? 'No se encontraron planes' : 'Sin planes registrados'}
               </h3>
               <p className="text-sm" style={{ color: '#6b7f6b' }}>
-                {search ? 'Intenta ajustar los filtros de búsqueda' : 'Registra el primer plan para comenzar'}
+                {search
+                  ? 'Intenta ajustar los filtros de búsqueda'
+                  : 'Registra el primer plan para comenzar'}
               </p>
             </div>
           </Card>
@@ -228,7 +226,7 @@ export function PlansManager() {
               <div className="col-span-4">Plan</div>
               <div className="col-span-2">Edad Máxima</div>
               <div className="col-span-2">Monto Base</div>
-              <div className="col-span-2">Porcentaje</div>
+              <div className="col-span-2">Comisión</div>
               <div className="col-span-1">Estado</div>
               <div className="col-span-1 text-right">Acciones</div>
             </div>
@@ -303,13 +301,15 @@ export function PlansManager() {
             <div className="flex flex-col gap-4">
               <p className="text-sm text-[#6b7f6b]">
                 ¿Estás seguro de que deseas eliminar el plan{' '}
-                <strong className="text-[#1a2e1a]">
-                  {deletingPlan.name}
-                </strong>
-                ? Esta acción ocultará el plan del sistema y podría afectar a los usuarios vinculados.
+                <strong className="text-[#1a2e1a]">{deletingPlan.name}</strong>? Esta acción
+                ocultará el plan del sistema y podría afectar a los usuarios vinculados.
               </p>
               <div className="flex justify-end gap-3">
-                <Button onClick={() => setDeletingPlan(null)} variant="secondary" disabled={actionLoading}>
+                <Button
+                  onClick={() => setDeletingPlan(null)}
+                  variant="secondary"
+                  disabled={actionLoading}
+                >
                   Cancelar
                 </Button>
                 <Button onClick={handleDelete} variant="danger" disabled={actionLoading}>

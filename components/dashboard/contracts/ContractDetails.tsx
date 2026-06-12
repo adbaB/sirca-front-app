@@ -1225,7 +1225,9 @@ export function ContractDetails({ contractId }: { contractId: string }) {
                     Cartera
                   </div>
                   <span className="text-sm font-semibold uppercase" style={{ color: '#1a2e1a' }}>
-                    {contract.portfolio ? `${contract.portfolio.name} (${contract.portfolio.code}) - ${contract.portfolio.percentage}%` : 'Sin cartera'}
+                    {contract.portfolio
+                      ? `${contract.portfolio.name} (${contract.portfolio.code}) - $${Number(contract.portfolio.commissionAmount).toFixed(2)}`
+                      : 'Sin cartera'}
                   </span>
                 </div>
 

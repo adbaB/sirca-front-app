@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Briefcase, Percent, FileCode2, Activity } from 'lucide-react';
+import { Briefcase, DollarSign, FileCode2, Activity } from 'lucide-react';
 import { Modal } from '@/components/ui/Modal';
 import { Button } from '@/components/ui/Button';
 import { ErrorBanner } from '@/components/ui/ErrorBanner';
@@ -13,7 +13,7 @@ interface PortfolioFormModalProps {
   onSubmit: (data: {
     name: string;
     code: string;
-    percentage: number;
+    commissionAmount: number;
     status: 'ACTIVE' | 'INACTIVE';
   }) => Promise<void>;
   loading?: boolean;
@@ -31,7 +31,9 @@ export function PortfolioFormModal({
 }: PortfolioFormModalProps) {
   const [name, setName] = useState(portfolio?.name || '');
   const [code, setCode] = useState(portfolio?.code || '');
-  const [percentage, setPercentage] = useState(portfolio?.percentage.toString() || '0');
+  const [commissionAmount, setCommissionAmount] = useState(
+    portfolio?.commissionAmount?.toString() || '0',
+  );
   const [status, setStatus] = useState<'ACTIVE' | 'INACTIVE'>(portfolio?.status || 'ACTIVE');
 
   const [prevPortfolio, setPrevPortfolio] = useState<Portfolio | null | undefined>(portfolio);
@@ -40,7 +42,7 @@ export function PortfolioFormModal({
     setPrevPortfolio(portfolio);
     setName(portfolio?.name || '');
     setCode(portfolio?.code || '');
-    setPercentage(portfolio?.percentage?.toString() || '0');
+    setCommissionAmount(portfolio?.commissionAmount?.toString() || '0');
     setStatus(portfolio?.status || 'ACTIVE');
   }
 
@@ -49,7 +51,7 @@ export function PortfolioFormModal({
     await onSubmit({
       name: name.trim(),
       code: code.trim().toUpperCase(),
-      percentage: Number(percentage) || 0,
+      commissionAmount: Number(commissionAmount) || 0,
       status,
     });
   };
@@ -108,13 +110,13 @@ export function PortfolioFormModal({
           </div>
         </div>
 
-        {/* Porcentaje */}
+        {/* Comisión */}
         <div className="flex flex-col gap-1.5">
           <label className="text-sm font-semibold" style={{ color: '#1a2e1a' }}>
-            Porcentaje (%)
+            Monto de Comisión ($)
           </label>
           <div className="relative">
-            <Percent
+            <DollarSign
               className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4"
               style={{ color: '#6b7f6b' }}
             />
@@ -122,11 +124,10 @@ export function PortfolioFormModal({
               type="number"
               step="0.01"
               min="0"
-              max="100"
               required
               placeholder="0.00"
-              value={percentage}
-              onChange={(e) => setPercentage(e.target.value)}
+              value={commissionAmount}
+              onChange={(e) => setCommissionAmount(e.target.value)}
               className="w-full h-11 pl-10 pr-4 bg-[#f1f5f1] border border-[#e2ebe2] rounded-xl text-sm font-medium outline-none focus:ring-2 focus:ring-[#16a34a]/20 transition-all text-gray-900"
               disabled={loading}
             />

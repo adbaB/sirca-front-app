@@ -52,7 +52,7 @@ export function usePlans() {
     name: string;
     maxAge: number;
     amount: number;
-    percentage: number;
+    commissionAmount: number;
     status: 'ACTIVE' | 'INACTIVE';
   }) => {
     await api.post('/plans', payload);
@@ -65,7 +65,7 @@ export function usePlans() {
       name?: string;
       maxAge?: number;
       amount?: number;
-      percentage?: number;
+      commissionAmount?: number;
       status?: 'ACTIVE' | 'INACTIVE';
     },
   ) => {

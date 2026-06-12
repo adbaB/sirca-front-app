@@ -52,7 +52,7 @@ export function usePortfolios() {
     name: string;
     code: string;
     status?: 'ACTIVE' | 'INACTIVE';
-    percentage: number;
+    commissionAmount: number;
   }) => {
     await api.post('/portfolios', payload);
     await fetchPortfolios();
@@ -64,7 +64,7 @@ export function usePortfolios() {
       name?: string;
       code?: string;
       status?: 'ACTIVE' | 'INACTIVE';
-      percentage?: number;
+      commissionAmount?: number;
     },
   ) => {
     await api.patch(`/portfolios/${id}`, payload);

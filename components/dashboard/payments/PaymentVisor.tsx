@@ -231,7 +231,8 @@ export function PaymentVisor({
                         <button
                           onClick={() => {
                             setIsEditingDate(false);
-                            const dateVal = selectedPayment.paymentDate || selectedPayment.createdAt || '';
+                            const dateVal =
+                              selectedPayment.paymentDate || selectedPayment.createdAt || '';
                             setEditDate(toLocalInputDate(dateVal));
                           }}
                           disabled={actionLoading}

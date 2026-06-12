@@ -57,18 +57,16 @@ export function PortfolioRow({
         </div>
       </div>
 
-      {/* Percentage */}
+      {/* Commission */}
       <div className="col-span-3 hidden md:block">
         <p className="text-sm font-semibold text-[#16a34a]">
-          {portfolio.percentage}%
+          ${Number(portfolio.commissionAmount).toFixed(2)}
         </p>
       </div>
 
       {/* Status */}
       <div className="col-span-2 hidden md:block">
-        <Badge color={getStatusColor(portfolio.status)}>
-          {getStatusText(portfolio.status)}
-        </Badge>
+        <Badge color={getStatusColor(portfolio.status)}>{getStatusText(portfolio.status)}</Badge>
       </div>
 
       {/* Actions */}

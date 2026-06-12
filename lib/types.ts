@@ -13,7 +13,7 @@ export interface Portfolio {
   name: string;
   code: string;
   status: 'ACTIVE' | 'INACTIVE';
-  percentage: number;
+  commissionAmount: number;
   createdAt?: string;
   updatedAt?: string;
 }
@@ -116,7 +116,7 @@ export interface Plan {
   name: string;
   maxAge: number;
   amount: number;
-  percentage: number;
+  commissionAmount: number;
   status: 'ACTIVE' | 'INACTIVE';
   createdAt?: string;
   updatedAt?: string;

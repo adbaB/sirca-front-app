@@ -3,7 +3,9 @@
 import { Badge } from '@/components/ui/Badge';
 import { Can } from '@/components/ui/Can';
 import { Card } from '@/components/ui/Card';
+import { Input } from '@/components/ui/Input';
 import { Select } from '@/components/ui/Select';
+import { DatePicker } from '@/components/ui/DatePicker';
 import { MONTHS, YEARS } from '@/lib/constants';
 import {
   Calendar,
@@ -13,7 +15,6 @@ import {
   FileText,
   Lock,
   ShieldAlert,
-  Users,
 } from 'lucide-react';
 import { useState, type ComponentType, type SVGProps } from 'react';
 
@@ -43,15 +44,15 @@ const REPORTS: ReportType[] = [
     badgeColor: '#16a34a',
   },
   {
-    id: 'advisors-relation',
-    title: 'Relación de Asesores',
-    shortDesc: 'Ventas y rendimiento por asesor.',
+    id: 'sip-commissions',
+    title: 'Comisiones SIP',
+    shortDesc: 'Resumen mensual de comisiones.',
     longDesc:
-      'Muestra el listado de asesores de ventas, volumen de contratos procesados por cada uno de ellos en el período seleccionado, comisiones asignadas y métricas globales de desempeño comercial.',
-    icon: Users,
-    active: false,
-    badge: 'Próximamente',
-    badgeColor: '#3b82f6',
+      'Genera el resumen mensual de comisiones SIP clasificado por afiliaciones, cobranzas de nuevo convenio, convenio inicial y cobranzas extemporáneas. Muestra los totales de comisiones a pagar por cartera.',
+    icon: FileSpreadsheet,
+    active: true,
+    badge: 'Disponible',
+    badgeColor: '#16a34a',
   },
   {
     id: 'payments-relation',
@@ -72,6 +73,26 @@ export function ReportsPanel() {
   const [month, setMonth] = useState<number>(currentDate.getMonth() + 1);
   const [downloading, setDownloading] = useState<'excel' | 'pdf' | null>(null);
 
+  const getDefaultStartDate = () => {
+    const d = new Date();
+    const y = d.getFullYear();
+    const m = String(d.getMonth() + 1).padStart(2, '0');
+    return `${y}-${m}-01`;
+  };
+
+  const getDefaultEndDate = () => {
+    const d = new Date();
+    const y = d.getFullYear();
+    const m = d.getMonth() + 1;
+    const lastDay = new Date(y, m, 0).getDate();
+    const mStr = String(m).padStart(2, '0');
+    const dStr = String(lastDay).padStart(2, '0');
+    return `${y}-${mStr}-${dStr}`;
+  };
+
+  const [startDate, setStartDate] = useState<string>(getDefaultStartDate());
+  const [endDate, setEndDate] = useState<string>(getDefaultEndDate());
+
   const selectedReport = REPORTS.find((r) => r.id === selectedReportId) || REPORTS[0];
 
   const yearOptions = YEARS.map((y) => ({
@@ -86,15 +107,25 @@ export function ReportsPanel() {
   const handleDownload = async (format: 'excel' | 'pdf') => {
     setDownloading(format);
     try {
-      const monthStr = String(month).padStart(2, '0');
-      const url = `/reports/contracts/${format}?year=${year}&month=${month}`;
+      let url = '';
+      let filename = '';
+
+      if (selectedReportId === 'sip-commissions') {
+        url = `/reports/sip-commissions/${format}?startDate=${startDate}&endDate=${endDate}`;
+        filename = `comisiones-sip-${startDate}-a-${endDate}.${format === 'excel' ? 'xlsx' : 'pdf'}`;
+      } else {
+        const monthStr = String(month).padStart(2, '0');
+        url = `/reports/contracts/${format}?year=${year}&month=${month}`;
+        filename = `reporte-contratos-${year}-${monthStr}.${format === 'excel' ? 'xlsx' : 'pdf'}`;
+      }
+
       const res = await fetch(url);
       if (!res.ok) throw new Error('Error al generar el reporte');
       const blob = await res.blob();
       const downloadUrl = window.URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = downloadUrl;
-      a.download = `reporte-contratos-${year}-${monthStr}.${format === 'excel' ? 'xlsx' : 'pdf'}`;
+      a.download = filename;
       document.body.appendChild(a);
       a.click();
       a.remove();
@@ -224,10 +255,10 @@ export function ReportsPanel() {
 
           {/* Right Column: Report Details Panel */}
           <div className="flex-1 w-full animate-fade-in">
-            <Card className="overflow-hidden shadow-sm min-h-[380px]">
+            <Card className="shadow-sm min-h-[380px]">
               {/* Header section with gradient */}
               <div
-                className="px-6 py-6"
+                className="px-6 py-6 rounded-t-2xl"
                 style={{
                   background: 'linear-gradient(135deg, #f0fdf4 0%, #dcfce7 50%, #f0fdf4 100%)',
                   borderBottom: '1px solid #e2ebe2',
@@ -276,24 +307,43 @@ export function ReportsPanel() {
                       >
                         Filtros de Período
                       </h4>
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        <Select
-                          id="report-year"
-                          label="Año de Facturación"
-                          value={String(year)}
-                          onChange={(v) => setYear(Number(v))}
-                          options={yearOptions}
-                          icon={<Calendar className="h-4 w-4" />}
-                        />
-                        <Select
-                          id="report-month"
-                          label="Mes de Facturación"
-                          value={String(month)}
-                          onChange={(v) => setMonth(Number(v))}
-                          options={monthOptions}
-                          icon={<Calendar className="h-4 w-4" />}
-                        />
-                      </div>
+                      {selectedReportId === 'sip-commissions' ? (
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                          <DatePicker
+                            id="report-start-date"
+                            label="Fecha de Inicio"
+                            value={startDate}
+                            onChange={(val) => setStartDate(val)}
+                            icon={<Calendar className="h-4 w-4" />}
+                          />
+                          <DatePicker
+                            id="report-end-date"
+                            label="Fecha de Fin"
+                            value={endDate}
+                            onChange={(val) => setEndDate(val)}
+                            icon={<Calendar className="h-4 w-4" />}
+                          />
+                        </div>
+                      ) : (
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                          <Select
+                            id="report-year"
+                            label="Año de Facturación"
+                            value={String(year)}
+                            onChange={(v) => setYear(Number(v))}
+                            options={yearOptions}
+                            icon={<Calendar className="h-4 w-4" />}
+                          />
+                          <Select
+                            id="report-month"
+                            label="Mes de Facturación"
+                            value={String(month)}
+                            onChange={(v) => setMonth(Number(v))}
+                            options={monthOptions}
+                            icon={<Calendar className="h-4 w-4" />}
+                          />
+                        </div>
+                      )}
                     </div>
 
                     <div style={{ borderTop: '1px solid #e2ebe2' }} className="my-2" />

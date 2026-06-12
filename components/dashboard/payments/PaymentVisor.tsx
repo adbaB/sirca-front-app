@@ -19,6 +19,7 @@ import {
 import { useEffect, useState } from 'react';
 import { formatDate, getMethodStyle, getStatusStyle } from './paymentUtils';
 import { usePermissions } from '@/hooks/usePermissions';
+import { DatePicker } from '@/components/ui/DatePicker';
 
 const toLocalInputDate = (dateStr: string): string => {
   try {
@@ -209,13 +210,14 @@ export function PaymentVisor({
                     </p>
                     {isEditingDate ? (
                       <div className="flex items-center gap-1.5 mt-1 animate-fadeIn">
-                        <input
-                          type="date"
-                          value={editDate}
-                          onChange={(e) => setEditDate(e.target.value)}
-                          disabled={actionLoading}
-                          className="px-2 py-1 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-[#16a34a]/20 focus:border-[#16a34a] rounded-lg text-xs bg-white text-gray-900"
-                        />
+                        <div className="w-40">
+                          <DatePicker
+                            value={editDate}
+                            onChange={(val) => setEditDate(val)}
+                            disabled={actionLoading}
+                            size="sm"
+                          />
+                        </div>
                         <button
                           onClick={handleSaveDate}
                           disabled={actionLoading || !editDate}
@@ -231,7 +233,8 @@ export function PaymentVisor({
                         <button
                           onClick={() => {
                             setIsEditingDate(false);
-                            const dateVal = selectedPayment.paymentDate || selectedPayment.createdAt || '';
+                            const dateVal =
+                              selectedPayment.paymentDate || selectedPayment.createdAt || '';
                             setEditDate(toLocalInputDate(dateVal));
                           }}
                           disabled={actionLoading}

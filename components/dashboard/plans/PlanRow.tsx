@@ -14,13 +14,7 @@ interface PlanRowProps {
   actionLoading: boolean;
 }
 
-export function PlanRow({
-  plan,
-  isLast,
-  onEdit,
-  onDelete,
-  actionLoading,
-}: PlanRowProps) {
+export function PlanRow({ plan, isLast, onEdit, onDelete, actionLoading }: PlanRowProps) {
   const getStatusColor = (status: string) => {
     return status === 'ACTIVE' ? '#16a34a' : '#dc2626';
   };
@@ -68,18 +62,16 @@ export function PlanRow({
         </p>
       </div>
 
-      {/* Percentage */}
+      {/* Commission */}
       <div className="col-span-2 hidden md:block">
         <p className="text-sm font-semibold text-[#16a34a]">
-          {Number(plan.percentage).toFixed(2)}%
+          ${Number(plan.commissionAmount).toFixed(2)}
         </p>
       </div>
 
       {/* Status */}
       <div className="col-span-1 hidden md:block">
-        <Badge color={getStatusColor(plan.status)}>
-          {getStatusText(plan.status)}
-        </Badge>
+        <Badge color={getStatusColor(plan.status)}>{getStatusText(plan.status)}</Badge>
       </div>
 
       {/* Actions */}

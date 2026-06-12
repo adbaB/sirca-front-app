@@ -64,7 +64,7 @@ export function PermissionsProvider({ children }: { children: React.ReactNode })
   return React.createElement(
     PermissionsContext.Provider,
     { value: { session, loading, refetchSession } },
-    children
+    children,
   );
 }
 

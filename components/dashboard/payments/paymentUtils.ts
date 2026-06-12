@@ -1,7 +1,14 @@
 export const formatDate = (dateStr: string) => {
   try {
-    const date = new Date(dateStr);
+    let date: Date;
+    if (typeof dateStr === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(dateStr)) {
+      const [y, m, d] = dateStr.split('-').map(Number);
+      date = new Date(y, m - 1, d, 12, 0, 0);
+    } else {
+      date = new Date(dateStr);
+    }
     return new Intl.DateTimeFormat('es-VE', {
+      timeZone: 'America/Caracas',
       day: '2-digit',
       month: '2-digit',
       year: 'numeric',

@@ -3,9 +3,8 @@
 import { Badge } from '@/components/ui/Badge';
 import { Can } from '@/components/ui/Can';
 import { Card } from '@/components/ui/Card';
-import { Input } from '@/components/ui/Input';
 import { Select } from '@/components/ui/Select';
-import { DatePicker } from '@/components/ui/DatePicker';
+import { useAdvisors } from '@/hooks/useAdvisors';
 import { MONTHS, YEARS } from '@/lib/constants';
 import {
   Calendar,
@@ -55,15 +54,15 @@ const REPORTS: ReportType[] = [
     badgeColor: '#16a34a',
   },
   {
-    id: 'payments-relation',
-    title: 'Relación de Pagos',
-    shortDesc: 'Historial y métodos de cobro.',
+    id: 'advisor-payments',
+    title: 'Pagos por Asesor',
+    shortDesc: 'Detalle de cobros por cartera y asesor.',
     longDesc:
-      'Listado detallado de todas las transacciones de pago validadas en el mes, desglosado por método de recaudación (Pago Móvil, Zelle, Transferencia Bancaria, Efectivo) para auditoría fiscal y contabilidad.',
-    icon: FileSpreadsheet,
-    active: false,
-    badge: 'Próximamente',
-    badgeColor: '#3b82f6',
+      'Reporte detallado de los pagos recibidos en el mes de facturación, agrupados por cartera comercial. Permite filtrar por un asesor específico o ver el consolidado general.',
+    icon: ClipboardList,
+    active: true,
+    badge: 'Disponible',
+    badgeColor: '#16a34a',
   },
 ];
 
@@ -72,6 +71,8 @@ export function ReportsPanel() {
   const [year, setYear] = useState<number>(currentDate.getFullYear());
   const [month, setMonth] = useState<number>(currentDate.getMonth() + 1);
   const [downloading, setDownloading] = useState<'excel' | 'pdf' | null>(null);
+  const { advisors } = useAdvisors();
+  const [selectedAdvisorId, setSelectedAdvisorId] = useState<string>('');
 
   const getDefaultStartDate = () => {
     const d = new Date();
@@ -114,6 +115,9 @@ export function ReportsPanel() {
       if (selectedReportId === 'sip-commissions') {
         url = `/reports/sip-commissions/${format}?year=${year}&month=${month}`;
         filename = `comisiones-sip-${year}-${monthStr}.${format === 'excel' ? 'xlsx' : 'pdf'}`;
+      } else if (selectedReportId === 'advisor-payments') {
+        url = `/reports/advisor-payments/${format}?year=${year}&month=${month}${selectedAdvisorId ? `&advisorId=${selectedAdvisorId}` : ''}`;
+        filename = `pagos-asesor-${year}-${monthStr}.${format === 'excel' ? 'xlsx' : 'pdf'}`;
       } else {
         url = `/reports/contracts/${format}?year=${year}&month=${month}`;
         filename = `reporte-contratos-${year}-${monthStr}.${format === 'excel' ? 'xlsx' : 'pdf'}`;
@@ -307,24 +311,42 @@ export function ReportsPanel() {
                       >
                         Filtros de Período
                       </h4>
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <Select
+                          id="report-year"
+                          label="Año de Facturación"
+                          value={String(year)}
+                          onChange={(v) => setYear(Number(v))}
+                          options={yearOptions}
+                          icon={<Calendar className="h-4 w-4" />}
+                        />
+                        <Select
+                          id="report-month"
+                          label="Mes de Facturación"
+                          value={String(month)}
+                          onChange={(v) => setMonth(Number(v))}
+                          options={monthOptions}
+                          icon={<Calendar className="h-4 w-4" />}
+                        />
+                      </div>
+                      {selectedReportId === 'advisor-payments' && (
+                        <div className="mt-4">
                           <Select
-                            id="report-year"
-                            label="Año de Facturación"
-                            value={String(year)}
-                            onChange={(v) => setYear(Number(v))}
-                            options={yearOptions}
-                            icon={<Calendar className="h-4 w-4" />}
-                          />
-                          <Select
-                            id="report-month"
-                            label="Mes de Facturación"
-                            value={String(month)}
-                            onChange={(v) => setMonth(Number(v))}
-                            options={monthOptions}
-                            icon={<Calendar className="h-4 w-4" />}
+                            id="report-advisor"
+                            label="Asesor de Ventas"
+                            value={selectedAdvisorId}
+                            onChange={(v) => setSelectedAdvisorId(v)}
+                            options={[
+                              { value: '', label: 'Todos los Asesores' },
+                              ...advisors.map((adv) => ({
+                                value: adv.id,
+                                label: adv.name,
+                              })),
+                            ]}
+                            icon={<FileText className="h-4 w-4" />}
                           />
                         </div>
+                      )}
                     </div>
 
                     <div style={{ borderTop: '1px solid #e2ebe2' }} className="my-2" />

@@ -5,6 +5,7 @@ import { Activity, User, Briefcase } from 'lucide-react';
 import { Modal } from '@/components/ui/Modal';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
+import { DatePicker } from '@/components/ui/DatePicker';
 import { ErrorBanner } from '@/components/ui/ErrorBanner';
 import { useAdvisors } from '@/hooks/useAdvisors';
 import { usePortfolios } from '@/hooks/usePortfolios';
@@ -38,11 +39,18 @@ export function ContractFormModal({
   const [advisorId, setAdvisorId] = useState(contract?.advisor?.id || '');
   const [portfolioId, setPortfolioId] = useState(contract?.portfolio?.id || '');
 
+  const [localError, setLocalError] = useState('');
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!affiliationDate) {
+      setLocalError('La fecha de afiliación es obligatoria.');
+      return;
+    }
+    setLocalError('');
     await onSubmit({
       status: status as 'ACTIVE' | 'INACTIVE',
-      affiliationDate: affiliationDate ? new Date(affiliationDate) : undefined,
+      affiliationDate: new Date(affiliationDate),
       advisorId: advisorId || null,
       portfolioId: portfolioId || null,
     });
@@ -55,7 +63,7 @@ export function ContractFormModal({
       title={contract ? 'Modificar Contrato' : 'Nuevo Contrato'}
       maxWidth="440px"
     >
-      <ErrorBanner message={error} />
+      <ErrorBanner message={error || localError} />
 
       <form onSubmit={handleSubmit} className="flex flex-col gap-4">
         {/* Estado */}
@@ -138,20 +146,13 @@ export function ContractFormModal({
 
         {/* Fecha de Afiliación */}
         <div className="grid grid-cols-1 gap-4">
-          <div className="flex flex-col gap-1.5">
-            <label className="text-sm font-semibold" style={{ color: '#1a2e1a' }}>
-              Fecha de Afiliación
-            </label>
-            <Input
-              label=""
-              id="affiliationDate"
-              type="date"
-              required
-              value={affiliationDate}
-              onChange={(e) => setAffiliationDate(e.target.value)}
-              disabled={loading}
-            />
-          </div>
+          <DatePicker
+            id="affiliationDate"
+            label="Fecha de Afiliación"
+            value={affiliationDate}
+            onChange={(val) => setAffiliationDate(val)}
+            disabled={loading}
+          />
         </div>
 
         <div

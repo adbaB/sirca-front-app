@@ -5,6 +5,7 @@ import { Can } from '@/components/ui/Can';
 import { Card } from '@/components/ui/Card';
 import { Input } from '@/components/ui/Input';
 import { Select } from '@/components/ui/Select';
+import { DatePicker } from '@/components/ui/DatePicker';
 import { MONTHS, YEARS } from '@/lib/constants';
 import {
   Calendar,
@@ -254,10 +255,10 @@ export function ReportsPanel() {
 
           {/* Right Column: Report Details Panel */}
           <div className="flex-1 w-full animate-fade-in">
-            <Card className="overflow-hidden shadow-sm min-h-[380px]">
+            <Card className="shadow-sm min-h-[380px]">
               {/* Header section with gradient */}
               <div
-                className="px-6 py-6"
+                className="px-6 py-6 rounded-t-2xl"
                 style={{
                   background: 'linear-gradient(135deg, #f0fdf4 0%, #dcfce7 50%, #f0fdf4 100%)',
                   borderBottom: '1px solid #e2ebe2',
@@ -308,20 +309,18 @@ export function ReportsPanel() {
                       </h4>
                       {selectedReportId === 'sip-commissions' ? (
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                          <Input
+                          <DatePicker
                             id="report-start-date"
                             label="Fecha de Inicio"
-                            type="date"
                             value={startDate}
-                            onChange={(e) => setStartDate(e.target.value)}
+                            onChange={(val) => setStartDate(val)}
                             icon={<Calendar className="h-4 w-4" />}
                           />
-                          <Input
+                          <DatePicker
                             id="report-end-date"
                             label="Fecha de Fin"
-                            type="date"
                             value={endDate}
-                            onChange={(e) => setEndDate(e.target.value)}
+                            onChange={(val) => setEndDate(val)}
                             icon={<Calendar className="h-4 w-4" />}
                           />
                         </div>

@@ -14,9 +14,32 @@ import { es } from 'date-fns/locale';
 /** Format a date string/Date to "d MMM, yyyy" in Spanish locale. Returns "N/A" for falsy values. */
 export function formatDate(dateStr: string | Date | undefined | null): string {
   if (!dateStr) return 'N/A';
-  const parsed = new Date(dateStr);
+  
+  let parsed: Date;
+  if (typeof dateStr === 'string') {
+    // If it's a date-only string YYYY-MM-DD, parse at midday to prevent timezone shift issues
+    if (/^\d{4}-\d{2}-\d{2}$/.test(dateStr)) {
+      const [y, m, d] = dateStr.split('-').map(Number);
+      parsed = new Date(y, m - 1, d, 12, 0, 0);
+    } else {
+      parsed = new Date(dateStr);
+    }
+  } else {
+    parsed = new Date(dateStr);
+  }
+
   if (isNaN(parsed.getTime())) return 'N/A';
-  return format(parsed, 'd MMM, yyyy', { locale: es });
+  
+  try {
+    return new Intl.DateTimeFormat('es-VE', {
+      timeZone: 'America/Caracas',
+      day: 'numeric',
+      month: 'short',
+      year: 'numeric',
+    }).format(parsed);
+  } catch {
+    return format(parsed, 'd MMM, yyyy', { locale: es });
+  }
 }
 
 /** Format a "YYYY-MM" billing month string to "Enero 2025" style. */

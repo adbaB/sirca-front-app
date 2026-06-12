@@ -109,12 +109,12 @@ export function ReportsPanel() {
     try {
       let url = '';
       let filename = '';
+      const monthStr = String(month).padStart(2, '0');
 
       if (selectedReportId === 'sip-commissions') {
-        url = `/reports/sip-commissions/${format}?startDate=${startDate}&endDate=${endDate}`;
-        filename = `comisiones-sip-${startDate}-a-${endDate}.${format === 'excel' ? 'xlsx' : 'pdf'}`;
+        url = `/reports/sip-commissions/${format}?year=${year}&month=${month}`;
+        filename = `comisiones-sip-${year}-${monthStr}.${format === 'excel' ? 'xlsx' : 'pdf'}`;
       } else {
-        const monthStr = String(month).padStart(2, '0');
         url = `/reports/contracts/${format}?year=${year}&month=${month}`;
         filename = `reporte-contratos-${year}-${monthStr}.${format === 'excel' ? 'xlsx' : 'pdf'}`;
       }
@@ -307,24 +307,6 @@ export function ReportsPanel() {
                       >
                         Filtros de Período
                       </h4>
-                      {selectedReportId === 'sip-commissions' ? (
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                          <DatePicker
-                            id="report-start-date"
-                            label="Fecha de Inicio"
-                            value={startDate}
-                            onChange={(val) => setStartDate(val)}
-                            icon={<Calendar className="h-4 w-4" />}
-                          />
-                          <DatePicker
-                            id="report-end-date"
-                            label="Fecha de Fin"
-                            value={endDate}
-                            onChange={(val) => setEndDate(val)}
-                            icon={<Calendar className="h-4 w-4" />}
-                          />
-                        </div>
-                      ) : (
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                           <Select
                             id="report-year"
@@ -343,7 +325,6 @@ export function ReportsPanel() {
                             icon={<Calendar className="h-4 w-4" />}
                           />
                         </div>
-                      )}
                     </div>
 
                     <div style={{ borderTop: '1px solid #e2ebe2' }} className="my-2" />
